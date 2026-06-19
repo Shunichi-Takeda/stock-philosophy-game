@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Philosophy ～ ふたつの世界線 ～</title>
+<meta name="description" content="株式会社Stockが大切にしている10の考え方を、パラレルワールドの探索を通じて学ぶオンボーディング教材">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== CSS RESET & VARIABLES ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Brand Colors */
+  --stock-blue: #002b4e;
+  --stock-blue-light: #1a4a6e;
+  --stock-accent: #4ecdc4;
+  --stock-warm: #f7a072;
+  --stock-gold: #ffd93d;
+
+  /* World A (With Philosophy) */
+  --wa-bg: linear-gradient(135deg, #e8f4f8 0%, #f0f9ff 50%, #fef9ef 100%);
+  --wa-card: rgba(255,255,255,0.92);
+  --wa-text: #1a2a3a;
+  --wa-accent: #4ecdc4;
+  --wa-glow: rgba(78,205,196,0.3);
+  --wa-border: rgba(78,205,196,0.3);
+
+  /* World B (Without Philosophy) */
+  --wb-bg: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  --wb-card: rgba(30,30,50,0.85);
+  --wb-text: #b0b8c8;
+  --wb-accent: #e94560;
+  --wb-glow: rgba(233,69,96,0.3);
+  --wb-border: rgba(233,69,96,0.3);
+
+  /* Common */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,0.18);
+  --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-main: 'Noto Sans JP', 'Inter', sans-serif;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-main);
+  background: #0a0a1a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== SCREEN SYSTEM ===== */
+.screen {
+  display: none;
+  min-height: 100vh;
+  position: relative;
+  animation: fadeIn 0.6s ease;
+}
+.screen.active { display: flex; flex-direction: column; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1px, 1px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes portalOpen {
+  0% { transform: scale(0) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(180deg); opacity: 1; }
+  100% { transform: scale(1) rotate(360deg); opacity: 1; }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* ===== TITLE SCREEN ===== */
+#title-screen {
+  background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #002b4e 60%, #0a2a3e 100%);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+#title-screen::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(78,205,196,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(247,160,114,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(255,217,61,0.05) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.stars {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.star {
+  position: absolute;
+  width: 3px; height: 3px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 50%;
+  animation: float 3s ease-in-out infinite;
+}
+
+.title-content {
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+}
+
+.title-logo {
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
+  color: var(--stock-accent);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.title-main {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 900;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff 0%, var(--stock-accent) 50%, var(--stock-warm) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title-sub {
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.title-desc {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--stock-accent), #3db8b0);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 24px rgba(78,205,196,0.3);
+  letter-spacing: 0.05em;
+}
+.btn-start:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(78,205,196,0.5);
+}
+.btn-start .arrow {
+  font-size: 1.3rem;
+  transition: transform 0.3s;
+}
+.btn-start:hover .arrow { transform: translateX(4px); }
+
+/* ===== CHAPTER SELECT ===== */
+#chapter-select {
+  background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 50%, #002b4e 100%);
+  padding: 2rem;
+  align-items: center;
+}
+
+.chapter-header {
+  text-align: center;
+  padding: 2rem 0 1.5rem;
+}
+.chapter-header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.chapter-header p {
+  color: rgba(255,255,255,0.5);
+  font-size: 0.9rem;
+}
+
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  max-width: 960px;
+  width: 100%;
+  padding: 1rem 0 2rem;
+}
+
+.chapter-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.chapter-card:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--stock-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(78,205,196,0.15);
+}
+.chapter-card.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.chapter-card.completed {
+  border-color: rgba(78,205,196,0.4);
+  background: rgba(78,205,196,0.08);
+}
+.chapter-card.completed::after {
+  content: '✓';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 28px; height: 28px;
+  background: var(--stock-accent);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.chapter-num {
+  font-size: 0.75rem;
+  color: var(--stock-accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.chapter-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+.chapter-excerpt {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.5;
+}
+
+.progress-bar-container {
+  max-width: 960px;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+.progress-label {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+.progress-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--stock-accent), var(--stock-warm));
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+/* ===== GAME SCREEN ===== */
+#game-screen {
+  min-height: 100vh;
+  transition: background 0.8s ease;
+}
+
+#game-screen.world-a {
+  background: var(--wa-bg);
+  color: var(--wa-text);
+}
+#game-screen.world-b {
+  background: var(--wb-bg);
+  color: var(--wb-text);
+}
+#game-screen.world-reflect {
+  background: linear-gradient(135deg, #1a1a3e 0%, #2a2a5e 50%, #1a3a5e 100%);
+  color: #e0e0e0;
+}
+#game-screen.world-story {
+  background: linear-gradient(135deg, #002b4e 0%, #003d6e 50%, #002040 100%);
+  color: #e0e0e0;
+}
+
+/* Game Top Bar */
+.game-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.world-a .game-topbar { background: rgba(255,255,255,0.7); }
+.world-b .game-topbar { background: rgba(10,10,30,0.7); }
+.world-reflect .game-topbar,
+.world-story .game-topbar { background: rgba(10,10,30,0.7); }
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-back {
+  background: none;
+  border: 1px solid rgba(128,128,128,0.3);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-main);
+}
+.world-a .btn-back { color: var(--wa-text); }
+.world-b .btn-back,
+.world-reflect .btn-back,
+.world-story .btn-back { color: #b0b8c8; }
+.btn-back:hover { background: rgba(128,128,128,0.15); }
+
+.world-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.world-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+.world-a .world-dot { background: var(--wa-accent); box-shadow: 0 0 8px var(--wa-glow); }
+.world-b .world-dot { background: var(--wb-accent); box-shadow: 0 0 8px var(--wb-glow); }
+.world-reflect .world-dot { background: #a78bfa; box-shadow: 0 0 8px rgba(167,139,250,0.3); }
+.world-story .world-dot { background: var(--stock-gold); box-shadow: 0 0 8px rgba(255,217,61,0.3); }
+
+.step-indicator {
+  font-size: 0.75rem;
+  color: rgba(128,128,128,0.6);
+}
+
+/* Game Content */
+.game-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem 3rem;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.scene-card {
+  width: 100%;
+  border-radius: var(--radius);
+  padding: 2rem;
+  animation: slideUp 0.5s ease;
+  position: relative;
+}
+.world-a .scene-card {
+  background: var(--wa-card);
+  border: 1px solid var(--wa-border);
+  box-shadow: var(--shadow);
+}
+.world-b .scene-card {
+  background: var(--wb-card);
+  border: 1px solid var(--wb-border);
+  box-shadow: var(--shadow);
+}
+.world-reflect .scene-card {
+  background: rgba(60,50,100,0.5);
+  border: 1px solid rgba(167,139,250,0.3);
+  box-shadow: var(--shadow);
+}
+.world-story .scene-card {
+  background: rgba(0,43,78,0.6);
+  border: 1px solid rgba(255,217,61,0.2);
+  box-shadow: var(--shadow);
+}
+
+.scene-emoji {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.scene-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+}
+.world-a .scene-label { color: var(--wa-accent); background: rgba(78,205,196,0.1); }
+.world-b .scene-label { color: var(--wb-accent); background: rgba(233,69,96,0.1); }
+.world-reflect .scene-label { color: #a78bfa; background: rgba(167,139,250,0.1); }
+.world-story .scene-label { color: var(--stock-gold); background: rgba(255,217,61,0.1); }
+
+.scene-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+.world-a .scene-title { color: var(--wa-text); }
+.world-b .scene-title { color: #fff; }
+.world-reflect .scene-title,
+.world-story .scene-title { color: #fff; }
+
+.scene-text {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+.world-a .scene-text { color: #4a5568; }
+.world-b .scene-text { color: #8899aa; }
+.world-reflect .scene-text,
+.world-story .scene-text { color: rgba(255,255,255,0.7); }
+
+.scene-dialogue {
+  padding: 1.2rem 1.5rem;
+  border-radius: var(--radius-sm);
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  position: relative;
+}
+.world-a .scene-dialogue {
+  background: rgba(78,205,196,0.08);
+  border-left: 3px solid var(--wa-accent);
+  color: var(--wa-text);
+}
+.world-b .scene-dialogue {
+  background: rgba(233,69,96,0.08);
+  border-left: 3px solid var(--wb-accent);
+  color: var(--wb-text);
+}
+.world-story .scene-dialogue {
+  background: rgba(255,217,61,0.08);
+  border-left: 3px solid var(--stock-gold);
+  color: rgba(255,255,255,0.85);
+}
+
+.dialogue-speaker {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+.world-a .dialogue-speaker { color: var(--wa-accent); }
+.world-b .dialogue-speaker { color: var(--wb-accent); }
+.world-story .dialogue-speaker { color: var(--stock-gold); }
+
+/* Choice Buttons */
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.choice-btn {
+  width: 100%;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid;
+  background: transparent;
+}
+.world-a .choice-btn,
+.world-reflect .choice-btn {
+  color: var(--wa-text);
+  border-color: rgba(78,205,196,0.3);
+  background: rgba(78,205,196,0.05);
+}
+.world-a .choice-btn:hover,
+.world-reflect .choice-btn:hover {
+  background: rgba(78,205,196,0.15);
+  border-color: var(--wa-accent);
+  transform: translateX(4px);
+}
+.world-b .choice-btn {
+  color: var(--wb-text);
+  border-color: rgba(233,69,96,0.2);
+  background: rgba(233,69,96,0.05);
+}
+.world-b .choice-btn:hover {
+  background: rgba(233,69,96,0.15);
+  border-color: var(--wb-accent);
+  transform: translateX(4px);
+}
+.world-reflect .choice-btn {
+  color: #e0e0e0;
+  border-color: rgba(167,139,250,0.3);
+  background: rgba(167,139,250,0.05);
+}
+.world-reflect .choice-btn:hover {
+  background: rgba(167,139,250,0.15);
+  border-color: #a78bfa;
+  transform: translateX(4px);
+}
+
+.choice-btn.selected {
+  border-width: 2px;
+}
+.world-a .choice-btn.selected,
+.world-reflect .choice-btn.selected {
+  border-color: var(--wa-accent);
+  background: rgba(78,205,196,0.15);
+}
+
+/* Navigation Buttons */
+.btn-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 2rem;
+}
+.world-a .btn-next {
+  background: linear-gradient(135deg, var(--wa-accent), #3db8b0);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(78,205,196,0.3);
+}
+.world-b .btn-next {
+  background: linear-gradient(135deg, #e94560, #c73550);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(233,69,96,0.3);
+}
+.world-reflect .btn-next {
+  background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(167,139,250,0.3);
+}
+.world-story .btn-next {
+  background: linear-gradient(135deg, var(--stock-gold), #f0c030);
+  color: var(--stock-blue);
+  box-shadow: 0 4px 16px rgba(255,217,61,0.3);
+}
+.btn-next:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+/* Portal Transition */
+.portal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.portal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.portal-circle {
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.portal-overlay.active .portal-circle {
+  width: 200vmax;
+  height: 200vmax;
+}
+.portal-to-a .portal-circle { background: rgba(232,244,248,0.97); }
+.portal-to-b .portal-circle { background: rgba(26,26,46,0.97); }
+.portal-to-reflect .portal-circle { background: rgba(26,26,62,0.97); }
+.portal-to-story .portal-circle { background: rgba(0,43,78,0.97); }
+
+.portal-text {
+  position: absolute;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transition: opacity 0.3s 0.4s;
+}
+.portal-overlay.active .portal-text { opacity: 1; }
+.portal-to-a .portal-text { color: var(--wa-accent); }
+.portal-to-b .portal-text { color: var(--wb-accent); }
+.portal-to-reflect .portal-text { color: #a78bfa; }
+.portal-to-story .portal-text { color: var(--stock-gold); }
+
+/* Reflection options */
+.reflect-option {
+  width: 100%;
+  text-align: left;
+  padding: 1.2rem 1.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(167,139,250,0.25);
+  background: rgba(167,139,250,0.05);
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  cursor: pointer;
+  font-family: var(--font-main);
+  transition: var(--transition);
+}
+.reflect-option:hover {
+  background: rgba(167,139,250,0.15);
+  border-color: #a78bfa;
+  transform: translateX(4px);
+}
+
+.reflect-response {
+  padding: 1.5rem;
+  border-radius: var(--radius-sm);
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.2);
+  margin-top: 1.5rem;
+  animation: slideUp 0.5s ease;
+}
+.reflect-response p {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+/* Stock Quote */
+.stock-quote {
+  border-radius: var(--radius-sm);
+  padding: 1.5rem;
+  margin-top: 1rem;
+  position: relative;
+}
+.world-story .stock-quote {
+  background: rgba(255,217,61,0.06);
+  border: 1px solid rgba(255,217,61,0.15);
+}
+.stock-quote::before {
+  content: '"';
+  position: absolute;
+  top: -0.5rem;
+  left: 1rem;
+  font-size: 3rem;
+  color: var(--stock-gold);
+  opacity: 0.3;
+  font-family: Georgia, serif;
+}
+.stock-quote p {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.85);
+  font-style: italic;
+}
+
+/* Chapter Complete */
+.chapter-complete {
+  text-align: center;
+  padding: 2rem;
+}
+.chapter-complete .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--stock-accent), var(--stock-gold));
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  animation: pulse 2s infinite;
+}
+.chapter-complete h3 {
+  font-size: 1.3rem;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+.chapter-complete p {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.philosophy-reveal {
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  background: rgba(78,205,196,0.08);
+  border: 1px solid rgba(78,205,196,0.2);
+  margin: 1.5rem 0;
+}
+.philosophy-reveal h4 {
+  color: var(--stock-accent);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.philosophy-reveal p {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ===== ENDING SCREEN ===== */
+#ending-screen {
+  background: linear-gradient(135deg, #002b4e 0%, #003d6e 30%, #002040 100%);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px; height: 10px;
+  top: -20px;
+  animation: confetti-fall 3s linear infinite;
+}
+
+.ending-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+}
+.ending-content h2 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  font-weight: 900;
+}
+.ending-content > p {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.ending-summary {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+.ending-summary h3 {
+  color: var(--stock-accent);
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.ending-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.ending-item:last-child { border-bottom: none; }
+.ending-item .num {
+  color: var(--stock-accent);
+  font-weight: 700;
+  font-size: 0.8rem;
+  min-width: 28px;
+}
+.ending-item .text {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.ending-message {
+  background: linear-gradient(135deg, rgba(78,205,196,0.1), rgba(255,217,61,0.08));
+  border: 1px solid rgba(78,205,196,0.2);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+.ending-message p {
+  color: rgba(255,255,255,0.85);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.btn-restart {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50px;
+  background: transparent;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-restart:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.4);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .scene-card { padding: 1.5rem; }
+  .game-content { padding: 1.5rem 1rem 2rem; }
+  .chapter-grid { grid-template-columns: 1fr; }
+  .scene-emoji { font-size: 2.5rem; }
+  .scene-title { font-size: 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Portal Transition Overlay -->
+<div class="portal-overlay" id="portal">
+  <div class="portal-circle"></div>
+  <span class="portal-text" id="portal-text"></span>
+</div>
+
+<!-- TITLE SCREEN -->
+<div class="screen active" id="title-screen">
+  <div class="stars" id="stars"></div>
+  <div class="title-content">
+    <div class="title-logo">STOCK PHILOSOPHY</div>
+    <h1 class="title-main">ふたつの世界線</h1>
+    <p class="title-sub">～ もし、この考え方がなかったら ～</p>
+    <p class="title-desc">
+      ここにはふたつの世界が存在します。<br>
+      同じ会社、同じ人々、同じ出来事。<br>
+      違うのはたったひとつ ―「考え方」だけ。<br><br>
+      ふたつの世界を旅して、<br>
+      その「違い」を見つけてください。
+    </p>
+    <button class="btn-start" onclick="startGame()">
+      世界を探索する <span class="arrow">→</span>
+    </button>
+  </div>
+</div>
+
+<!-- CHAPTER SELECT SCREEN -->
+<div class="screen" id="chapter-select">
+  <div class="chapter-header">
+    <h2>世界線マップ</h2>
+    <p>探索する世界線を選んでください</p>
+  </div>
+  <div class="progress-bar-container">
+    <div class="progress-label">
+      <span>探索の進捗</span>
+      <span id="progress-text">0 / 10</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+    </div>
+  </div>
+  <div class="chapter-grid" id="chapter-grid"></div>
+</div>
+
+<!-- GAME SCREEN -->
+<div class="screen" id="game-screen">
+  <div class="game-topbar">
+    <div class="topbar-left">
+      <button class="btn-back" onclick="backToChapters()">← マップへ</button>
+      <div class="world-indicator">
+        <span class="world-dot"></span>
+        <span id="world-name"></span>
+      </div>
+    </div>
+    <span class="step-indicator" id="step-indicator"></span>
+  </div>
+  <div class="game-content" id="game-content"></div>
+</div>
+
+<!-- ENDING SCREEN -->
+<div class="screen" id="ending-screen">
+  <div class="ending-content" id="ending-content"></div>
+</div>
+
+<script>
+// ===== GAME DATA =====
+const CHAPTERS = [
+  {
+    id: 1,
+    num: "Chapter 01",
+    title: "「心身の健康」よりも大切なタスクは、絶対に存在しない",
+    excerpt: "締め切り、責任感、周囲の期待…それでも最優先すべきものとは",
+    worldB: {
+      emoji: "😰",
+      label: "世界線B ― 考え方のない世界",
+      title: "終電まで、あたりまえの世界",
+      text: "この世界の会社では、プロジェクトの締め切りが近づくと連日深夜残業が常態化しています。体調を崩すメンバーが続出しますが、「みんな頑張っているから」と誰も声を上げません。",
+      dialogue: {
+        speaker: "マネージャー",
+        text: "リリースまであと3日だ。体調が悪い？ 気合で乗り切ってくれ。ここが踏ん張りどころだよ。"
+      },
+      consequence: "結果、品質の低い状態でリリースされ、バグ対応に追われる日々。さらに2名が体調不良で長期離脱し、チームは崩壊寸前に。"
+    },
+    worldA: {
+      emoji: "🌱",
+      label: "世界線A ― 考え方のある世界",
+      title: "健康を最優先にする世界",
+      text: "この世界では、週次ミーティングの冒頭で必ず「心身の健康」を確認します。体調に不安があれば、即座に休むことが推奨されています。",
+      dialogue: {
+        speaker: "マネージャー",
+        text: "締め切りが迫っているけど、無理は絶対にしないでほしい。スケジュールは調整できるけど、あなたの健康は取り替えが効かないから。"
+      },
+      consequence: "リリースは1日延期されましたが、全員が万全の状態で最終チェックを行い、高品質な状態でリリース。チームの信頼関係もさらに深まりました。"
+    },
+    discovery: {
+      question: "ふたつの世界の違いを生んでいるものは何だと思いますか？",
+      choices: [
+        "マネージャーの優しさの違い",
+        "「心身の健康が最も大切」という揺るがない優先順位",
+        "スケジュールに余裕があるかどうか"
+      ],
+      bestIndex: 1,
+      explanation: "スケジュールに余裕があるからではありません。優しい上司がいるからでもありません。「どんなタスクよりも心身の健康が上」という絶対的な優先順位が組織にあるかどうかが、すべての判断を変えるのです。"
+    },
+    reflection: {
+      question: "あなた自身の経験を振り返ってみてください。",
+      options: [
+        { emoji: "🙋", text: "無理をして体調を崩し、結局パフォーマンスが落ちた経験がある", response: "多くの人がその経験を持っています。Stockでは、その「無理」を未然に防ぐ仕組みがあります。あなたのその経験は、健康の大切さを本当に理解している証です。" },
+        { emoji: "😌", text: "思い切って休んだら、復帰後にむしろ良い成果が出た経験がある", response: "まさにそれこそがStockの考え方です。休むことは「サボる」ことではなく、最高のパフォーマンスを出すための投資。あなたはすでにその本質を知っています。" },
+        { emoji: "🤔", text: "「休みたい」と言い出せなかった経験がある", response: "「言い出せない空気」こそが問題の本質です。Stockでは、休むことに許可は不要です。なぜなら、心身の健康よりも大切なタスクは、この世に存在しないから。" }
+      ]
+    },
+    stockStory: {
+      text: "Stockでは毎週の「週次ミーティング」の冒頭で、代表の澤村が必ず全メンバーに伝えるメッセージがあります。メンバーが「もう分かっていますよ」と言っても、毎週繰り返し、繰り返し伝え続けています。\n\nStockのミッション（世界中の非IT企業から情報共有のストレスを取り除くこと）は短距離走ではなく、マラソンです。マラソンを走り切るためには、健康という土台が絶対に必要なのです。\n\nなぜこれほど繰り返すのか？ その理由はシンプルです：",
+      quote: "みんなの『心身の健康』よりも大切なタスクは、絶対に存在しない。理由はシンプルで、みんなに『幸せになってほしい』から。健康を犠牲にした仕事は、幸せではない。",
+      philosophy: "「心身の健康」よりも大切なタスクは、絶対に存在しない"
+    }
+  },
+  {
+    id: 2,
+    num: "Chapter 02",
+    title: "「本人に操作性のない事柄」での差別は、絶対に禁止",
+    excerpt: "年齢、入社年次、性別、国籍…本人に変えられないことで判断しない",
+    worldB: {
+      emoji: "😔",
+      label: "世界線B ― 考え方のない世界",
+      title: "声の大きさで決まる世界",
+      text: "この世界の会議では、発言の重みが「役職」と「入社年次」で決まります。どんなに良いアイデアでも、若手やインターン生の発言は軽く扱われます。",
+      dialogue: { speaker: "ベテラン社員", text: "うーん、その意見はまだ早いんじゃない？ もう少し経験を積んでからにしなよ。" },
+      consequence: "若手メンバーは次第に発言しなくなり、新しいアイデアが生まれなくなりました。結果、プロダクトは陳腐化し、ユーザーは離れていきます。"
+    },
+    worldA: {
+      emoji: "🤝",
+      label: "世界線A ― 考え方のある世界",
+      title: "「何を言ったか」だけで判断される世界",
+      text: "この世界では、入社1日目のインターン生でも、10年目のベテランでも、意見の価値は「論理的に正しいかどうか」だけで判断されます。",
+      dialogue: { speaker: "マネージャー", text: "すごく良い視点だね。入社年次に関係なく、論理的に筋が通っている意見は採用するよ。もっと聞かせて。" },
+      consequence: "新鮮な視点が次々と採用され、プロダクトは進化し続けます。メンバー全員が「自分の意見には価値がある」と感じ、チームの活力が生まれています。"
+    },
+    discovery: {
+      question: "ふたつの世界の違いを生んでいるものは何でしょう？",
+      choices: [
+        "上司の性格がたまたま良いかどうか",
+        "年齢・入社年次・性別など「本人に操作性のない事柄」で判断しないルール",
+        "若手が優秀かどうか"
+      ],
+      bestIndex: 1,
+      explanation: "「本人に操作性のない事柄」とは、年齢・入社年次・性別・国籍など、本人の努力では変えられないものです。これらで人を評価しないというルールがあるだけで、全員が安心して自分の意見を持てるようになります。"
+    },
+    reflection: {
+      question: "あなたの過去を振り返ってみてください。",
+      options: [
+        { emoji: "😤", text: "年齢や立場を理由に意見を聞いてもらえなかった経験がある", response: "その悔しさを知っているあなただからこそ、Stockの「操作性のない事柄で判断しない」という考え方の大切さが、きっと深く理解できるはずです。" },
+        { emoji: "😊", text: "立場に関係なく意見を尊重してもらえた経験がある", response: "その環境がいかに貴重かを知っているあなたは、Stockの文化を守り、広げていく力になれる人です。" },
+        { emoji: "🙏", text: "自分自身が無意識に年齢や立場で判断していたかもしれない", response: "その「気づき」がとても大切です。誰もが無意識のバイアスを持っています。大切なのは、それに気づき、意識的に変えていこうとすることです。Stockはそれを仕組みで支えます。" }
+      ]
+    },
+    stockStory: {
+      text: "Stockには象徴的な文化があります。社内で代表の澤村を「社長」と呼ぶ人は一人もいません。CEOもインターン生も全員が「〇〇さん」で呼び合います。\n\n誰でもCEOのカレンダーに直接ミーティングを入れることができ、入社年次に関係なく重要なプロジェクトを任されます。実際に、入社数年目のメンバーが営業チーム全体をリードしたり、新卒1年目がメディアチームで成果を出しています。\n\n評価基準は3つだけ：ミッションへの共感、論理的なコミュニケーション、そして個人のパフォーマンス。年齢でも、入社年次でもありません。",
+      quote: "「まだ若いから」「まだ入社〇年目だから」と言われてチャンスを与えられないのは、理不尽だと思います。年齢・入社年次・性別・国籍など「本人に操作性のない事柄」での差別は、絶対に禁止です。",
+      philosophy: "「本人に操作性のない事柄」での差別は、絶対に禁止"
+    }
+  },
+  {
+    id: 3,
+    num: "Chapter 03",
+    title: "40度の熱があっても、0.5秒で分かるのか？",
+    excerpt: "非IT企業の方でも迷わない、究極のシンプルさへのこだわり",
+    worldB: {
+      emoji: "😵",
+      label: "世界線B ― 考え方のない世界",
+      title: "高機能だけど誰も使えない世界",
+      text: "この世界のプロダクトは「多機能」を売りにしています。しかし、ユーザーの多くは非IT企業の方。高機能すぎて使い方がわからず、結局Excelに戻ってしまいます。",
+      dialogue: { speaker: "開発メンバー", text: "この機能、技術的にはすごく良いと思うんだけどな…。なんでユーザーさんは使ってくれないんだろう。" },
+      consequence: "多くの機能が追加されるたびにユーザーは混乱し、「難しい」という評判が広まります。本当に届けたかった人たちには、結局届きませんでした。"
+    },
+    worldA: {
+      emoji: "✨",
+      label: "世界線A ― 考え方のある世界",
+      title: "0.5秒で伝わる世界",
+      text: "この世界では、すべてのUI設計に「40度の熱があっても0.5秒で分かるか？」という基準が適用されます。非IT企業の方が説明なしで使えることが絶対条件です。",
+      dialogue: { speaker: "デザイナー", text: "このボタン、ITに詳しくないお母さんでも迷わず押せるかな？ 少しでも迷うなら、もっとシンプルにしよう。" },
+      consequence: "「こんなに簡単なツールは初めて」という声が続出。ITリテラシーに関係なく、誰もが情報共有できる世界が実現しています。"
+    },
+    discovery: {
+      question: "ふたつの世界を分けたものは何でしょう？",
+      choices: [
+        "デザイナーのスキルの差",
+        "「40度の熱があっても0.5秒で分かるか」という妥協なき基準",
+        "機能を減らしているかどうか"
+      ],
+      bestIndex: 1,
+      explanation: "機能を「減らす」のではなく、「40度の熱があっても0.5秒で分かるか？」という極端な基準を設けることで、本当に必要なものだけが残ります。これはユーザーへの深い愛情から生まれた基準です。"
+    },
+    reflection: {
+      question: "あなたのこれまでの経験を思い出してみてください。",
+      options: [
+        { emoji: "😫", text: "複雑すぎるツールやサービスに挫折した経験がある", response: "その「挫折」こそ、Stockが解決したい課題そのものです。あなたのその体験は、「誰もが使えるシンプルさ」がいかに大切かを物語っています。" },
+        { emoji: "💡", text: "シンプルで直感的なサービスに感動した経験がある", response: "その感動の裏には、「わかりやすさ」のために何度もやり直した人たちの努力があります。Stockはその努力を惜しまない会社です。" },
+        { emoji: "🎯", text: "「もっとシンプルにできないか？」と考えたことがある", response: "その問いかけ自体が、Stockの考え方と同じです。常に「もっとシンプルに」と問い続ける姿勢が、最高のプロダクトを生み出します。" }
+      ]
+    },
+    stockStory: {
+      text: "Stockは「世界中の『非IT企業』から、情報共有のストレスを取り除く」をミッションとしています。そのため、すべての機能に「40度の熱があっても、0.5秒で分かるか？」という基準が適用されます。\n\nこれは単なる「わかりやすさ」ではなく、届けるべき人に本当に届くかどうかの試金石です。",
+      quote: "私たちが運営する情報共有ツール「Stock」のミッションは、「世界中の『非IT企業』から、情報共有のストレスを取り除くこと」であり、その言葉通り「非IT企業」の方々を念頭に置いたツールです。",
+      philosophy: "40度の熱があっても、0.5秒で分かるのか？"
+    }
+  },
+  {
+    id: 4,
+    num: "Chapter 04",
+    title: "圧倒的なスピードは、相手の心を打つ",
+    excerpt: "「AIかと思った」と言われるほどのスピードへのこだわり",
+    worldB: {
+      emoji: "⏳",
+      label: "世界線B ― 考え方のない世界",
+      title: "「後で対応します」の世界",
+      text: "この世界では、ユーザーからの問い合わせは「24時間以内の返信」がルール。実際には翌営業日にまとめて対応されることが多く、ユーザーは返信を待ち続けます。",
+      dialogue: { speaker: "CSメンバー", text: "今日中には無理だから、明日の朝まとめて返そう。ルール上は問題ないし。" },
+      consequence: "ユーザーは「問い合わせても返信が遅い」と感じ、不満を募らせます。サポートの品質に問題はないのに、信頼は徐々に失われていきました。"
+    },
+    worldA: {
+      emoji: "⚡",
+      label: "世界線A ― 考え方のある世界",
+      title: "「AIかと思いました」の世界",
+      text: "この世界では、ユーザーの問い合わせに対して「圧倒的なスピード」で、かつ高品質な返信が行われます。ルールは「速ければ速いほど良い」。",
+      dialogue: { speaker: "ユーザー", text: "えっ、もう返信が来たんですか？ AIか何かでサポートメールの返信をしているのですか？" },
+      consequence: "「とてもクオリティの高い返信が、いつでもとんでもないスピードで返ってくる」とユーザーから驚きと感謝の声が届いています。"
+    },
+    discovery: {
+      question: "この違いの本質は何でしょう？",
+      choices: [
+        "人手が多いかどうか",
+        "圧倒的なスピードは単なる効率化ではなく「相手の心を打つ力」を持つという信念",
+        "マニュアルの充実度"
+      ],
+      bestIndex: 1,
+      explanation: "スピードは「効率」の問題ではなく「相手を想う気持ち」の表現です。速く返すのは、相手が困っている時間を1秒でも短くしたいから。その想いが伝わるから、心を打つのです。"
+    },
+    reflection: {
+      question: "スピードについて、あなたの経験を振り返ってみてください。",
+      options: [
+        { emoji: "😍", text: "予想よりずっと速い対応に感動した経験がある", response: "その感動を覚えているあなたは、「スピード」が持つ力をすでに体感しています。Stockは、その感動を毎日のように届ける会社です。" },
+        { emoji: "😔", text: "「もっと早く対応すればよかった」と後悔した経験がある", response: "その後悔は、あなたが相手のことを本当に考えている証拠です。Stockでは、「速さ」を個人の頑張りではなく、仕組みとして実現しています。" },
+        { emoji: "🤔", text: "速さと品質のバランスに悩んだ経験がある", response: "Stockが示す答えは「両方」です。速さも品質も諦めない。「AIかと思った」という言葉は、そのどちらも実現できた証です。" }
+      ]
+    },
+    stockStory: {
+      text: "Stockには「スピードが持つ4つの力」という考え方があります。\n\n① 最高のリスペクト ― 速い返信は「あなたを重んじている」というメッセージ。\n② 期待値を下げる武器 ― 1週間の締め切りで翌日に出せば、相手の期待値が低い最高の状態でプレゼンできる。\n③ ゴールへのヒントが即座に得られる ― 間違っていても、速く動けばすぐ軌道修正できる。\n④ ストレスがなくなる ― タスクを溜めないことが心身の健康にもつながる。\n\nある研究では、5分以内の返信は30分後の返信の100倍の効果があるとも言われています。",
+      quote: "以前、「AIか何かでサポートメールの返信をしているのですか？」とユーザーさんに聞かれたことがありました。「とてもクオリティの高い返信が、いつでもとんでもないスピードで返ってくるから」とのこと。スピードは心がけ次第で、今すぐ変えられるのです。",
+      philosophy: "圧倒的なスピードは、相手の心を打つ"
+    }
+  },
+  {
+    id: 5,
+    num: "Chapter 05",
+    title: "「Proactive（能動的）」なアクション",
+    excerpt: "指示を待つのではなく、自ら気づき、自ら動く",
+    worldB: {
+      emoji: "🤷",
+      label: "世界線B ― 考え方のない世界",
+      title: "「言われてないので」の世界",
+      text: "この世界では、指示されたことだけを正確にこなすのが美徳とされています。「自分の担当外」のことに手を出すのは越権行為とみなされます。",
+      dialogue: { speaker: "メンバー", text: "それ、自分の担当じゃないんで。上から指示が来たらやりますけど。" },
+      consequence: "誰もが「自分の範囲」だけを守り、隙間に落ちたタスクは誰にも拾われません。小さな問題が放置され、やがて大きなトラブルに。"
+    },
+    worldA: {
+      emoji: "🚀",
+      label: "世界線A ― 考え方のある世界",
+      title: "「先に動いておきました」の世界",
+      text: "この世界では「Proactive（能動的）」という言葉が日常的に飛び交っています。「とてもProactiveなアクションで助かりました」と感謝し合う文化があります。",
+      dialogue: { speaker: "メンバー", text: "来週のミーティングで使うかもしれないと思って、先にデータをまとめておきました。使えそうですか？" },
+      consequence: "一人ひとりが「次に何が必要か」を先読みして動くため、チーム全体が驚くほどスムーズに。お互いへの感謝が自然に生まれています。"
+    },
+    discovery: {
+      question: "この2つの世界を分けるものは？",
+      choices: [
+        "メンバーの能力の差",
+        "「指示を待つ」のではなく「能動的に動く」ことを称賛する文化",
+        "チームの人数の違い"
+      ],
+      bestIndex: 1,
+      explanation: "Proactiveであることは、能力の問題ではありません。「先に動いてくれてありがとう」と言い合える文化があるからこそ、一人ひとりが自然と能動的になるのです。"
+    },
+    reflection: {
+      question: "「能動的な行動」について思い出してみてください。",
+      options: [
+        { emoji: "✨", text: "先回りして動いたことで喜ばれた経験がある", response: "その「先回り」こそがProactiveなアクションです。Stockでは、まさにその行動が日常的に称賛され、感謝される環境があります。" },
+        { emoji: "💭", text: "「気づいていたけど動けなかった」という経験がある", response: "「気づいていた」こと自体がとても大切です。あとは一歩踏み出す勇気だけ。Stockでは、その一歩を踏み出した人を全力で応援します。" },
+        { emoji: "🌟", text: "誰かのProactiveな行動に助けられた経験がある", response: "その感謝の気持ちを持てるあなたは、きっと自分もProactiveに動ける人です。Stockでは「ありがとう」が自然に行き交う環境があります。" }
+      ]
+    },
+    stockStory: {
+      text: "Stockでは「Proactive（能動的な）」という言葉が日常的に飛び交っています。「とてもProactiveなアクションで助かりました」「Proactiveに対応してくださり、ありがとうございます」という具合です。\n\nこれは単なるスローガンではなく、メンバー同士が日々の行動で実践し、称え合っている文化です。",
+      quote: "Stockでは「Proactive（能動的な）」という言葉が日常的に飛び交っています。「とてもProactiveなアクションで助かりました」「Proactiveに対応してくださり、ありがとうございます」という具合です。",
+      philosophy: "「Proactive（能動的）」なアクション"
+    }
+  },
+  {
+    id: 6,
+    num: "Chapter 06",
+    title: "サンクコストを切り捨てろ",
+    excerpt: "すでに費やした時間やコストに縛られない、合理的な判断を",
+    worldB: {
+      emoji: "😰",
+      label: "世界線B ― 考え方のない世界",
+      title: "「ここまでやったのに…」の世界",
+      text: "この世界では、3ヶ月かけたプロジェクトの方向性が間違いだとわかっても、「もったいないから」と続けてしまいます。",
+      dialogue: { speaker: "リーダー", text: "方向が違うのはわかってるけど、3ヶ月分の工数を捨てるなんてできないよ…。このまま進めてなんとかしよう。" },
+      consequence: "間違った方向に進み続けた結果、半年後にはさらに大きな損失に。最終的に1からやり直すことになり、最初に方向転換した場合の3倍のコストがかかりました。"
+    },
+    worldA: {
+      emoji: "🎯",
+      label: "世界線A ― 考え方のある世界",
+      title: "「今から最善を」の世界",
+      text: "この世界では、「サンクコストを切り捨てろ」が合言葉。過去にどれだけ投資しても、今この瞬間から見て最善の判断をすることが最優先されます。",
+      dialogue: { speaker: "リーダー", text: "3ヶ月かけたのは事実。でも、『これまで』と『これから』は別の問題だ。今からベストな選択をしよう。" },
+      consequence: "素早い方向転換のおかげで、新しい方向で1ヶ月後にはユーザーに喜ばれる機能をリリース。「あの時切り替えてよかった」とチーム全員が感じています。"
+    },
+    discovery: {
+      question: "この差を生んだ本質的な違いは？",
+      choices: [
+        "リーダーの決断力の差",
+        "「過去のコスト」ではなく「未来の価値」で判断する思考の習慣",
+        "プロジェクトの規模の違い"
+      ],
+      bestIndex: 1,
+      explanation: "サンクコスト（すでに支払った、戻ってこないコスト）に縛られる心理は、誰にでもあります。しかし、「過去にいくら使ったか」と「これからどうすべきか」はまったく別の問題。この切り分けが自然にできる文化が、チームを正しい方向に導きます。"
+    },
+    reflection: {
+      question: "「もったいない」と感じた経験を思い出してみてください。",
+      options: [
+        { emoji: "😣", text: "「ここまでやったから」と続けて、結局後悔した経験がある", response: "その後悔を知っているからこそ、「サンクコストを切り捨てる」ことの価値がわかるはず。過去の経験を、これからの判断基準に変えていきましょう。" },
+        { emoji: "💪", text: "勇気を持って方向転換し、うまくいった経験がある", response: "その勇気は簡単に持てるものではありません。Stockでは、その「切り替え」を個人の勇気に頼らず、チームの文化として支えます。" },
+        { emoji: "🤔", text: "方向転換すべきか迷っている状況が、今まさにある", response: "「迷っている」と認識できていること自体が大切な一歩です。判断のヒントは「過去を基準にしていないか？未来を見て判断しているか？」と自問すること。Stockの仲間がその判断を一緒に支えます。" }
+      ]
+    },
+    stockStory: {
+      text: "代表の澤村はサンクコストを、こんなわかりやすい例で説明しています。\n\n『5,000円で入った遊園地がとてもつまらなかった場合、あなたならどうしますか？\nA. 5,000円の元を取るために、つまらなくても1日過ごす\nB. 5,000円は捨てたと割り切り、すぐ退園して別の有意義なことに時間を使う』\n\n多くの人はAを選びがちですが、それは「すでに失った5,000円」に縛られて、さらに「時間」という追加コストを失っている状態です。\n\n仕事でも同じことが起きます。「ここまでやったから」「多額の予算を投じたから」「周囲に公言してしまったから」と、成功の見込みが薄いプロジェクトから撤退できなくなる。これをコンコルド効果と呼びます。",
+      quote: "サンクコストを切り捨てて、その時点で最適な選択をすること。過去に固執せず、『今から』の判断として何がベストかを考える。それがStockの意思決定の原則です。",
+      philosophy: "サンクコストを切り捨てろ"
+    }
+  },
+  {
+    id: 7,
+    num: "Chapter 07",
+    title: "全員がフェアであるために「論理的」であることを重視",
+    excerpt: "感情や声の大きさではなく、論理で議論する文化",
+    worldB: {
+      emoji: "😤",
+      label: "世界線B ― 考え方のない世界",
+      title: "声の大きい人が勝つ世界",
+      text: "この世界の議論では、声が大きい人、感情的に訴える人、役職が上の人の意見が通ります。論理的に正しいかどうかは二の次です。",
+      dialogue: { speaker: "マネージャー", text: "まあ、私がそう言ってるんだから、そうしておいてよ。理由？ 長年の経験でわかるんだよ。" },
+      consequence: "「何を言うか」ではなく「誰が言うか」が基準になり、若手や控えめな人の良いアイデアが埋もれてしまいます。"
+    },
+    worldA: {
+      emoji: "⚖️",
+      label: "世界線A ― 考え方のある世界",
+      title: "「論理」が共通言語の世界",
+      text: "この世界では、役職も入社年次も関係なく、「論理的に正しいかどうか」が唯一の判断基準。感情的な反論は認められず、必ず根拠を持って議論します。",
+      dialogue: { speaker: "メンバー", text: "その判断の根拠を教えてもらえますか？ 自分はこのデータからこう考えるのですが、いかがでしょう？" },
+      consequence: "全員が対等に意見を言える環境が生まれ、最も論理的に優れた意見が採用されます。結果、意思決定の品質が格段に向上しています。"
+    },
+    discovery: {
+      question: "フェアな議論を実現しているものは何でしょう？",
+      choices: [
+        "メンバー全員が議論好きであること",
+        "「論理的であること」を判断基準にすることで、誰もがフェアに意見を言える環境",
+        "会議のファシリテーション技術"
+      ],
+      bestIndex: 1,
+      explanation: "論理を共通言語にすると、「年齢が上だから」「声が大きいから」といった不公平が消えます。誰でも論理的に意見を述べられる。だからフェアなのです。"
+    },
+    reflection: {
+      question: "「議論」や「意見の伝え方」について振り返ってみてください。",
+      options: [
+        { emoji: "🗣", text: "感情ではなく根拠を示して相手を納得させた経験がある", response: "その経験は、Stockの「論理的であること」の文化そのものです。論理的に伝える力は、全員がフェアでいるための土台になります。" },
+        { emoji: "😔", text: "論理的に正しくても、通せなかった経験がある", response: "その悔しさは正当なものです。Stockでは「誰が言ったか」ではなく「何を言ったか」で判断されます。あなたの論理は、ここでは正しく評価されます。" },
+        { emoji: "💡", text: "相手の論理的な指摘で、自分の考えが変わった経験がある", response: "論理的な指摘で考えを変えられるのは、とても知性的な態度です。Stockでは、良い論理の前で柔軟に考えを変えることが称賛されます。" }
+      ]
+    },
+    stockStory: {
+      text: "Stockでは「論理的に物事を進める」ことを非常に重要視しています。これは、Stockで働く全てのメンバーがフェアな立場で自分の意見を言える環境にするためです。\n\n論理を共通言語にすることで、年齢も立場も関係ない、真にフラットな議論が可能になります。",
+      quote: "Stockでは、「論理的に物事を進める」ことを非常に重要視しています。これはStockで働く全てのメンバーが、フェアな立場で自分の意見を言える環境にするためです。",
+      philosophy: "全員がフェアであるために「論理的」であることを重視"
+    }
+  },
+  {
+    id: 8,
+    num: "Chapter 08",
+    title: "「すみません」から入れるか",
+    excerpt: "問題が起きたとき、まず自分を省みる謙虚さ",
+    worldB: {
+      emoji: "🔥",
+      label: "世界線B ― 考え方のない世界",
+      title: "「誰のせい？」の世界",
+      text: "この世界では、問題が発生すると真っ先に「犯人探し」が始まります。自分が関わっていたとしても、まず自分以外の原因を指摘します。",
+      dialogue: { speaker: "メンバーA", text: "いや、それは仕様書に書いてなかったから。確認しなかったBさんの責任でしょう。" },
+      consequence: "お互いに責任を押し付け合い、問題の解決は遅れ、チーム内の信頼関係はボロボロに。次の問題では、さらに防衛的になる悪循環が生まれています。"
+    },
+    worldA: {
+      emoji: "🙏",
+      label: "世界線A ― 考え方のある世界",
+      title: "「すみません、自分も…」の世界",
+      text: "この世界では、問題が発生したとき、関わった全員がまず「すみません」から入ります。相手を責める前に、自分にできたことがなかったかを振り返る文化があります。",
+      dialogue: { speaker: "メンバーA", text: "すみません、自分ももっと早い段階で確認しておくべきでした。一緒に原因を整理して、再発防止を考えましょう。" },
+      consequence: "問題解決が驚くほど速く、むしろトラブルの後にチームの絆が深まります。「あの人も自分から謝ってくれた」という信頼が積み重なっています。"
+    },
+    discovery: {
+      question: "このチーム力の違いは何から生まれていますか？",
+      choices: [
+        "メンバーの性格が穏やかかどうか",
+        "「まず自分を省みる」という謙虚さが全員に共有されている文化",
+        "問題が少ないかどうか"
+      ],
+      bestIndex: 1,
+      explanation: "問題の量は同じです。性格の違いでもありません。「すみません、から入れるか」という一つの行動習慣が、チーム全体の空気を根本から変えるのです。"
+    },
+    reflection: {
+      question: "「謝ること」「責任」について振り返ってみてください。",
+      options: [
+        { emoji: "🙇", text: "自分から「すみません」と言って、状況が好転した経験がある", response: "その経験は貴重です。「すみません」の一言は、弱さの表現ではなく、信頼を築く最も強い行動の一つ。あなたはすでにそれを知っています。" },
+        { emoji: "😤", text: "自分は悪くないのに謝ることに抵抗がある", response: "その気持ちはとても自然です。でもStockの「すみません」は、100%自分が悪いという意味ではありません。「自分にもできることがあったかもしれない」と省みる姿勢のことです。" },
+        { emoji: "🤝", text: "相手が先に謝ってくれて、心が楽になった経験がある", response: "「すみません」の力を受け取った側として実感しているあなたは、今度は自分がその力を使う番です。Stockでは、その連鎖が日常的に起きています。" }
+      ]
+    },
+    stockStory: {
+      text: "Stockのメンバーがとても誇らしく、「いかにもStockらしいな」と感じる文化の一つに、「何か問題が起こった時に、まず『すみません』から入る」というものがあります。\n\nこれは誰かに強制されているものではなく、自然にそうなっている文化です。",
+      quote: "私たちがとても誇らしく、そして「いかにもStockらしいな」と感じる文化の一つに、「何か問題が起こった時に、まず『すみません』から入る」というものがあります。",
+      philosophy: "「すみません」から入れるか"
+    }
+  },
+  {
+    id: 9,
+    num: "Chapter 09",
+    title: "グレーが最悪",
+    excerpt: "中途半端な判断は次のアクションにつながらない",
+    worldB: {
+      emoji: "🌫",
+      label: "世界線B ― 考え方のない世界",
+      title: "「とりあえず様子を見よう」の世界",
+      text: "この世界では、意思決定の場面で「AとBの中間をとろう」「とりあえず様子を見よう」が口癖です。明確な決断を避け、曖昧な方向に進みます。",
+      dialogue: { speaker: "リーダー", text: "AもBもそれぞれ良いところがあるから、中間をとろうか。どちらにも寄りすぎないように。" },
+      consequence: "中途半端な施策は効果も失敗もはっきりせず、次に何をすべきか誰にもわかりません。同じ議論が延々と繰り返されます。"
+    },
+    worldA: {
+      emoji: "⬛⬜",
+      label: "世界線A ― 考え方のある世界",
+      title: "白か黒か、明確に決める世界",
+      text: "この世界では「グレーが最悪」が合言葉。AかBか迷ったら、必ずどちらかに振り切って検証します。中途半端な中間案は選びません。",
+      dialogue: { speaker: "リーダー", text: "中間はとらない。まずAで振り切ってやってみよう。結果が出れば、次のアクションが明確になる。" },
+      consequence: "明確な施策は明確な結果を生み、成功でも失敗でも「次にやるべきこと」がはっきり見えます。意思決定のスピードと学びのサイクルが加速しています。"
+    },
+    discovery: {
+      question: "なぜ「グレーが最悪」なのでしょうか？",
+      choices: [
+        "極端な判断のほうがインパクトが大きいから",
+        "グレーな施策は結果が曖昧になり、次のアクション（Next Action）につながらないから",
+        "中間案はコストが高いから"
+      ],
+      bestIndex: 1,
+      explanation: "グレーが最悪な理由は「Next Actionに繋がらないから」。白にした結果がダメならば「次は黒にしよう」と進める。しかしグレーの結果は「もうちょっとグレー？」としか言えず、永遠に前に進めないのです。"
+    },
+    reflection: {
+      question: "「曖昧な判断」について思い出してみてください。",
+      options: [
+        { emoji: "😫", text: "中途半端な判断で結局やり直しになった経験がある", response: "その経験は「グレーが最悪」を体感として知っているということ。Stockでは、白か黒かを明確にすることで、その無駄を未然に防ぎます。" },
+        { emoji: "💪", text: "迷ったがどちらかに振り切って、結果的にうまくいった経験がある", response: "その「振り切る勇気」こそがStockの文化です。明確な判断は、明確な結果を生む。そしてその結果が、次の前進を可能にします。" },
+        { emoji: "🤔", text: "「様子を見よう」と言って先延ばしにした経験がある", response: "「様子を見る」は一見慎重に見えますが、実は判断を先延ばしにしているだけかもしれません。Stockでは「まず決めて、やってみて、結果を見る」ことを大切にしています。" }
+      ]
+    },
+    stockStory: {
+      text: "Stockの考え方に「グレーが最悪」というものがあります。白でも黒でもなく、中途半端に間をとった「グレー」な施策をするのは悪手だという考え方です。\n\nその理由はシンプルで、「グレーな施策は、Next Actionに繋がらないから」です。",
+      quote: "「白」でも「黒」でもなく、中途半端に間をとった「グレー」な施策をするのは悪手だという考え方です。これはなぜかと言うと、「グレーな施策は、Next Actionに繋がらないから」というのがその理由です。",
+      philosophy: "グレーが最悪"
+    }
+  },
+  {
+    id: 10,
+    num: "Chapter 10",
+    title: "「自分たちが存在する世界線」と「存在しなかった世界線」の差分を広げる",
+    excerpt: "自分たちがいることで、世界はどれだけ良くなったか",
+    worldB: {
+      emoji: "🌑",
+      label: "世界線B ― Stockが存在しなかった世界",
+      title: "情報共有に苦しみ続ける世界",
+      text: "この世界にStockは存在しません。非IT企業の人々は、情報共有の手段を持てず、大切な情報が日々失われていきます。「ITツールは難しい」と諦め、紙やメモに頼り続けています。",
+      dialogue: { speaker: "ある中小企業の社長", text: "うちみたいな会社には、使いこなせるITツールなんてないよ。結局、ベテランの頭の中にしか情報が残らない。" },
+      consequence: "ベテランが退職すると、長年の知識とノウハウがすべて失われます。世界中の非IT企業で、同じ問題が繰り返されています。"
+    },
+    worldA: {
+      emoji: "🌍",
+      label: "世界線A ― Stockが存在する世界",
+      title: "「こんな簡単なツール、初めて」の世界",
+      text: "この世界にはStockがあります。ITに詳しくない人でも、情報を簡単に残し、共有し、見つけることができます。大切な知識が、人に依存せずに蓄積されていきます。",
+      dialogue: { speaker: "ある中小企業の社長", text: "Stock使い始めてから、うちの会社の情報共有が劇的に変わった。こんなに簡単なツールは初めてだよ。" },
+      consequence: "世界中の非IT企業から、情報共有のストレスが取り除かれています。そしてその差分は、日々広がり続けています。"
+    },
+    discovery: {
+      question: "最終章の問いです。あなたがこれからStockで働くことで広げたい「差分」は何ですか？",
+      choices: [
+        "まだわからないが、ここまでの9つの考え方を胸に、見つけていきたい",
+        "自分の専門性を活かして、プロダクトや組織をより良くしたい",
+        "Stockの考え方を自分自身で体現し、チームに良い影響を与えたい"
+      ],
+      bestIndex: -1,
+      explanation: "この問いに「正解」はありません。どの答えも素晴らしいです。大切なのは、「自分がいることで、世界はほんの少し良くなっている」と実感できる日々を過ごすこと。Stockは、そういう場所であり続けます。"
+    },
+    reflection: {
+      question: "最後に、あなた自身について考えてみてください。",
+      options: [
+        { emoji: "🌱", text: "自分の存在が誰かの役に立っていると感じた経験がある", response: "その実感こそが、「世界線の差分」です。あなたがいることで良くなった何か ― それをStockでさらに大きく広げていきましょう。" },
+        { emoji: "🔍", text: "自分の仕事の意味や影響を、もっと実感したい", response: "Stockでは、あなたの仕事が「非IT企業の情報共有ストレス」を取り除くことに直結しています。その影響は、ユーザーの声として日々届きます。" },
+        { emoji: "🚀", text: "まだわからないが、これから見つけていきたい", response: "素直に「これから」と言えることがとても素敵です。Stockでの日々の中で、きっと「自分がいるからこそ」の瞬間に出会えるはず。楽しみにしていてください。" }
+      ]
+    },
+    stockStory: {
+      text: "Stockでは、「自分たちが存在する世界線」と「存在しなかった世界線」の差分を広げよう、というフレーズがよく登場します。\n\n一見すると複雑な言葉ですが、その意味はシンプルです。「自分たちがいることで、世界はどれだけ良くなったか？」を常に問い続けること。そしてその「差分」を、日々の仕事で少しずつ広げ続けること。\n\nあなたも今日から、その差分を広げる一員です。",
+      quote: "「自分たちが存在する世界線」と「存在しなかった世界線」の差分を広げよう ― この言葉を、私たちStockのメンバーは日々実感しています。",
+      philosophy: "「自分たちが存在する世界線」と「存在しなかった世界線」の差分を広げる"
+    }
+  }
+];
+
+// ===== GAME STATE =====
+let gameState = {
+  currentChapter: 0,
+  currentStep: 0,
+  completed: [],
+  reflections: []
+};
+
+// Load saved state
+function loadState() {
+  const saved = localStorage.getItem('stock-philosophy-game');
+  if (saved) {
+    try { gameState = JSON.parse(saved); } catch(e) {}
+  }
+}
+function saveState() {
+  localStorage.setItem('stock-philosophy-game', JSON.stringify(gameState));
+}
+
+// ===== STARS ANIMATION =====
+function createStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 50; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 3 + 's';
+    star.style.animationDuration = (2 + Math.random() * 3) + 's';
+    star.style.opacity = 0.2 + Math.random() * 0.6;
+    star.style.width = star.style.height = (1 + Math.random() * 3) + 'px';
+    container.appendChild(star);
+  }
+}
+
+// ===== SCREEN MANAGEMENT =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showPortal(type, text, callback) {
+  const portal = document.getElementById('portal');
+  const portalText = document.getElementById('portal-text');
+  portal.className = 'portal-overlay portal-to-' + type;
+  portalText.textContent = text;
+  portal.classList.add('active');
+  setTimeout(() => {
+    callback();
+    setTimeout(() => {
+      portal.classList.remove('active');
+    }, 300);
+  }, 800);
+}
+
+// ===== TITLE SCREEN =====
+function startGame() {
+  loadState();
+  showScreen('chapter-select');
+  renderChapterGrid();
+}
+
+// ===== CHAPTER SELECT =====
+function renderChapterGrid() {
+  const grid = document.getElementById('chapter-grid');
+  const completedCount = gameState.completed.length;
+  
+  grid.innerHTML = CHAPTERS.map((ch, i) => {
+    const isCompleted = gameState.completed.includes(ch.id);
+    const isLocked = i > 0 && !gameState.completed.includes(CHAPTERS[i-1].id) && !isCompleted;
+    const cls = isCompleted ? 'completed' : (isLocked ? 'locked' : '');
+    
+    return `
+      <div class="chapter-card ${cls}" onclick="${isLocked ? '' : `startChapter(${i})`}">
+        <div class="chapter-num">${ch.num}</div>
+        <div class="chapter-title">${ch.title}</div>
+        <div class="chapter-excerpt">${ch.excerpt}</div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('progress-text').textContent = `${completedCount} / 10`;
+  document.getElementById('progress-fill').style.width = (completedCount * 10) + '%';
+}
+
+// ===== GAME STEPS =====
+// Steps: 0=worldB, 1=worldA, 2=discovery, 3=reflection, 4=stockStory, 5=complete
+function startChapter(index) {
+  gameState.currentChapter = index;
+  gameState.currentStep = 0;
+  
+  showPortal('b', '世界線Bへ移動中...', () => {
+    showScreen('game-screen');
+    renderStep();
+  });
+}
+
+function renderStep() {
+  const ch = CHAPTERS[gameState.currentChapter];
+  const step = gameState.currentStep;
+  const gs = document.getElementById('game-screen');
+  const content = document.getElementById('game-content');
+  const worldName = document.getElementById('world-name');
+  const stepInd = document.getElementById('step-indicator');
+  
+  // Set world class
+  gs.className = 'screen active';
+  
+  const stepLabels = ['世界線B', '世界線A', '違いの発見', '振り返り', 'Stockの実話', 'クリア'];
+  stepInd.textContent = `${step + 1} / 6`;
+  
+  if (step === 0) {
+    // World B
+    gs.classList.add('world-b');
+    worldName.textContent = '世界線B ― 考え方のない世界';
+    const wb = ch.worldB;
+    content.innerHTML = `
+      <div class="scene-card">
+        <span class="scene-emoji">${wb.emoji}</span>
+        <span class="scene-label">${wb.label}</span>
+        <h2 class="scene-title">${wb.title}</h2>
+        <p class="scene-text">${wb.text}</p>
+        <div class="scene-dialogue">
+          <span class="dialogue-speaker">💬 ${wb.dialogue.speaker}</span>
+          ${wb.dialogue.text}
+        </div>
+        <p class="scene-text" style="margin-top:1rem;font-weight:500;">${wb.consequence}</p>
+        <div style="text-align:center">
+          <button class="btn-next" onclick="goToWorldA()">
+            もう一つの世界を見る →
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (step === 1) {
+    // World A
+    gs.classList.add('world-a');
+    worldName.textContent = '世界線A ― 考え方のある世界';
+    const wa = ch.worldA;
+    content.innerHTML = `
+      <div class="scene-card">
+        <span class="scene-emoji">${wa.emoji}</span>
+        <span class="scene-label">${wa.label}</span>
+        <h2 class="scene-title">${wa.title}</h2>
+        <p class="scene-text">${wa.text}</p>
+        <div class="scene-dialogue">
+          <span class="dialogue-speaker">💬 ${wa.dialogue.speaker}</span>
+          ${wa.dialogue.text}
+        </div>
+        <p class="scene-text" style="margin-top:1rem;font-weight:500;">${wa.consequence}</p>
+        <div style="text-align:center">
+          <button class="btn-next" onclick="goToDiscovery()">
+            違いを見つける →
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (step === 2) {
+    // Discovery
+    gs.classList.add('world-a');
+    worldName.textContent = '違いの発見';
+    const d = ch.discovery;
+    content.innerHTML = `
+      <div class="scene-card">
+        <span class="scene-emoji">🔍</span>
+        <span class="scene-label">DISCOVERY</span>
+        <h2 class="scene-title">${d.question}</h2>
+        <div class="choices" id="discovery-choices">
+          ${d.choices.map((c, i) => `
+            <button class="choice-btn" onclick="selectDiscovery(${i})">${c}</button>
+          `).join('')}
+        </div>
+        <div id="discovery-result" style="display:none"></div>
+      </div>
+    `;
+  } else if (step === 3) {
+    // Reflection
+    gs.classList.add('world-reflect');
+    worldName.textContent = '振り返り';
+    const r = ch.reflection;
+    content.innerHTML = `
+      <div class="scene-card">
+        <span class="scene-emoji">🪞</span>
+        <span class="scene-label">SELF-REFLECTION</span>
+        <h2 class="scene-title">${r.question}</h2>
+        <p class="scene-text">どれか一つ、あなたに近いものを選んでください。<br>正解・不正解はありません。</p>
+        <div class="choices" id="reflect-choices">
+          ${r.options.map((o, i) => `
+            <button class="reflect-option" onclick="selectReflection(${i})">
+              ${o.emoji} ${o.text}
+            </button>
+          `).join('')}
+        </div>
+        <div id="reflect-result" style="display:none"></div>
+      </div>
+    `;
+  } else if (step === 4) {
+    // Stock Story
+    gs.classList.add('world-story');
+    worldName.textContent = 'Stockの実話';
+    const s = ch.stockStory;
+    content.innerHTML = `
+      <div class="scene-card">
+        <span class="scene-emoji">📖</span>
+        <span class="scene-label">STOCK'S REAL STORY</span>
+        <h2 class="scene-title">Stockでは、実際にこうしています</h2>
+        <p class="scene-text">${s.text.replace(/\n/g, '<br>')}</p>
+        <div class="stock-quote">
+          <p>${s.quote}</p>
+        </div>
+        <div style="text-align:center">
+          <button class="btn-next" onclick="completeChapter()">
+            この世界線の探索を完了する ✓
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (step === 5) {
+    // Complete
+    gs.classList.add('world-story');
+    worldName.textContent = 'クリア！';
+    const s = ch.stockStory;
+    content.innerHTML = `
+      <div class="chapter-complete">
+        <div class="badge">🌟</div>
+        <h3>${ch.num} クリア！</h3>
+        <p>新たな考え方を発見しました</p>
+        <div class="philosophy-reveal">
+          <h4>STOCK PHILOSOPHY #${ch.id}</h4>
+          <p>${s.philosophy}</p>
+        </div>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem">
+          <button class="btn-next" onclick="backToChapters()" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)">
+            マップに戻る
+          </button>
+          ${gameState.currentChapter < 9 ? `
+            <button class="btn-next" onclick="nextChapter()">
+              次の世界線へ →
+            </button>
+          ` : `
+            <button class="btn-next" onclick="showEnding()">
+              エンディングへ →
+            </button>
+          `}
+        </div>
+      </div>
+    `;
+  }
+}
+
+function goToWorldA() {
+  gameState.currentStep = 1;
+  showPortal('a', '世界線Aへ移動中...', () => { renderStep(); });
+}
+
+function goToDiscovery() {
+  gameState.currentStep = 2;
+  renderStep();
+}
+
+function selectDiscovery(index) {
+  const ch = CHAPTERS[gameState.currentChapter];
+  const d = ch.discovery;
+  const btns = document.querySelectorAll('#discovery-choices .choice-btn');
+  
+  btns.forEach((btn, i) => {
+    btn.classList.toggle('selected', i === index);
+    btn.onclick = null;
+  });
+  
+  const result = document.getElementById('discovery-result');
+  const isBest = index === d.bestIndex || d.bestIndex === -1;
+  
+  result.style.display = 'block';
+  result.innerHTML = `
+    <div class="reflect-response">
+      <p>${d.explanation}</p>
+    </div>
+    <div style="text-align:center">
+      <button class="btn-next" onclick="goToReflection()">
+        自分を振り返る →
+      </button>
+    </div>
+  `;
+}
+
+function goToReflection() {
+  gameState.currentStep = 3;
+  showPortal('reflect', '振り返りの空間へ...', () => { renderStep(); });
+}
+
+function selectReflection(index) {
+  const ch = CHAPTERS[gameState.currentChapter];
+  const r = ch.reflection;
+  const option = r.options[index];
+  
+  const btns = document.querySelectorAll('#reflect-choices .reflect-option');
+  btns.forEach((btn, i) => {
+    if (i === index) {
+      btn.style.borderColor = '#a78bfa';
+      btn.style.background = 'rgba(167,139,250,0.15)';
+    }
+    btn.onclick = null;
+    btn.style.cursor = 'default';
+  });
+  
+  // Save reflection
+  gameState.reflections[gameState.currentChapter] = index;
+  saveState();
+  
+  const result = document.getElementById('reflect-result');
+  result.style.display = 'block';
+  result.innerHTML = `
+    <div class="reflect-response">
+      <p>${option.response}</p>
+    </div>
+    <div style="text-align:center">
+      <button class="btn-next" style="background:linear-gradient(135deg,var(--stock-gold),#f0c030);color:var(--stock-blue);" onclick="goToStory()">
+        Stockの実話を見る →
+      </button>
+    </div>
+  `;
+}
+
+function goToStory() {
+  gameState.currentStep = 4;
+  showPortal('story', 'Stockの実話へ...', () => { renderStep(); });
+}
+
+function completeChapter() {
+  const ch = CHAPTERS[gameState.currentChapter];
+  if (!gameState.completed.includes(ch.id)) {
+    gameState.completed.push(ch.id);
+  }
+  saveState();
+  gameState.currentStep = 5;
+  renderStep();
+}
+
+function nextChapter() {
+  const nextIdx = gameState.currentChapter + 1;
+  if (nextIdx < CHAPTERS.length) {
+    startChapter(nextIdx);
+  }
+}
+
+function backToChapters() {
+  showScreen('chapter-select');
+  renderChapterGrid();
+}
+
+// ===== ENDING =====
+function showEnding() {
+  showScreen('ending-screen');
+  const content = document.getElementById('ending-content');
+  
+  // Create confetti
+  const colors = ['#4ecdc4', '#f7a072', '#ffd93d', '#a78bfa', '#e94560'];
+  let confettiHTML = '';
+  for (let i = 0; i < 40; i++) {
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    confettiHTML += `<div class="confetti" style="
+      left:${Math.random()*100}%;
+      background:${color};
+      animation-delay:${Math.random()*3}s;
+      animation-duration:${2+Math.random()*3}s;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      width:${6+Math.random()*8}px;
+      height:${6+Math.random()*8}px;
+    "></div>`;
+  }
+  
+  content.innerHTML = `
+    ${confettiHTML}
+    <h2>🎉 全10の世界線を探索しました！</h2>
+    <p>あなたは今、Stockが大切にしている10の考え方を<br>ふたつの世界線の対比を通じて体験しました。</p>
+    
+    <div class="ending-summary">
+      <h3>発見した10の考え方</h3>
+      ${CHAPTERS.map(ch => `
+        <div class="ending-item">
+          <span class="num">#${ch.id}</span>
+          <span class="text">${ch.stockStory.philosophy}</span>
+        </div>
+      `).join('')}
+    </div>
+    
+    <div class="ending-message">
+      <p>
+        これらの考え方は、ルールや規則ではありません。<br>
+        Stockで働く全員が、日々の行動の中で<br>
+        自然に実践している「文化」です。<br><br>
+        あなたも今日から、<br>
+        <strong>「自分たちが存在する世界線」の差分を広げる一員</strong>です。<br><br>
+        Stockは、あなたと一緒に働けることを<br>
+        心から楽しみにしています。
+      </p>
+    </div>
+    
+    <button class="btn-restart" onclick="resetGame()">
+      🔄 最初からプレイする
+    </button>
+  `;
+}
+
+function resetGame() {
+  gameState = { currentChapter: 0, currentStep: 0, completed: [], reflections: [] };
+  saveState();
+  showScreen('title-screen');
+}
+
+// ===== INIT =====
+loadState();
+createStars();
+</script>
+</body>
+</html>
