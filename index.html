@@ -726,6 +726,14 @@ body {
   font-size: 0.95rem;
   line-height: 1.8;
 }
+/* World A (light bg) overrides for response boxes */
+.world-a .reflect-response {
+  background: rgba(0,43,78,0.07);
+  border: 1px solid rgba(0,43,78,0.15);
+}
+.world-a .reflect-response p {
+  color: #2a3a4a;
+}
 
 /* Stock Quote */
 .stock-quote {
@@ -906,6 +914,37 @@ body {
   border-color: rgba(255,255,255,0.4);
 }
 
+/* ===== DIFF DISCOVERY ===== */
+.diff-grid { display: grid; gap: 1rem; margin: 1.5rem 0; }
+.diff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; cursor: pointer; transition: all 0.3s; padding: 0.75rem; border-radius: 10px; border: 2px dashed rgba(128,128,128,0.2); }
+.diff-row:hover:not(.found) { border-color: rgba(78,205,196,0.4); background: rgba(78,205,196,0.03); }
+.diff-row.found { border-style: solid; border-color: rgba(78,205,196,0.3); background: rgba(78,205,196,0.05); cursor: default; }
+.diff-label { grid-column: 1 / -1; font-size: 0.75rem; color: rgba(128,128,128,0.6); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.diff-row.found .diff-label { color: var(--wa-accent); }
+.diff-cell { padding: 0.75rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.5; text-align: center; }
+.diff-cell.hidden { color: transparent; text-shadow: 0 0 12px rgba(128,128,128,0.5); user-select: none; }
+.diff-cell-b { background: rgba(233,69,96,0.06); }
+.diff-cell-a { background: rgba(78,205,196,0.06); }
+.diff-row.found .diff-cell-b { color: #c0392b; background: rgba(233,69,96,0.1); }
+.diff-row.found .diff-cell-a { color: #0a8a7a; background: rgba(78,205,196,0.1); font-weight: 600; }
+.diff-counter { text-align: center; font-size: 1.1rem; font-weight: 700; color: var(--wa-accent); margin: 1rem 0; }
+
+/* ===== INSIGHT CHART ===== */
+.insight-chart { padding: 1.5rem; }
+.insight-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.insight-label { min-width: 140px; font-size: 0.85rem; color: rgba(255,255,255,0.7); text-align: right; }
+.insight-bar-bg { flex: 1; height: 24px; background: rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; position: relative; }
+.insight-bar-fill { height: 100%; border-radius: 12px; transition: width 1s ease; }
+.insight-bar-fill.health { background: linear-gradient(90deg, #4ecdc4, #26a69a); }
+.insight-bar-fill.speed { background: linear-gradient(90deg, #ffd93d, #f0c030); }
+.insight-bar-fill.logic { background: linear-gradient(90deg, #a78bfa, #8b5cf6); }
+.insight-bar-fill.proactivity { background: linear-gradient(90deg, #f7a072, #e08050); }
+.insight-bar-fill.decisiveness { background: linear-gradient(90deg, #e94560, #c73550); }
+.insight-value { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.75rem; font-weight: 700; color: #fff; }
+.insight-title { text-align: center; margin: 2rem 0 1rem; }
+.insight-title .title-icon { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+.insight-title .title-text { font-size: 1.4rem; font-weight: 900; background: linear-gradient(135deg, var(--stock-accent), var(--stock-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 640px) {
   .scene-card { padding: 1.5rem; }
@@ -913,6 +952,8 @@ body {
   .chapter-grid { grid-template-columns: 1fr; }
   .scene-emoji { font-size: 2.5rem; }
   .scene-title { font-size: 1.2rem; }
+  .diff-row { grid-template-columns: 1fr; }
+  .insight-label { min-width: 100px; font-size: 0.75rem; }
 }
 </style>
 </head>
@@ -1012,6 +1053,11 @@ const CHAPTERS = [
       },
       consequence: "リリースは1日延期されましたが、全員が万全の状態で最終チェックを行い、高品質な状態でリリース。チームの信頼関係もさらに深まりました。"
     },
+    diffs: [
+      {label:'リーダーの言葉',worldB:'「気合で乗り切ってくれ」',worldA:'「無理は絶対にしないで」'},
+      {label:'チームの状態',worldB:'体調不良者が続出',worldA:'全員が万全の状態で働く'},
+      {label:'成果',worldB:'品質低下、バグ対応に追われる',worldA:'高品質なリリースを実現'}
+    ],
     discovery: {
       question: "ふたつの世界の違いを生んでいるものは何だと思いますか？",
       choices: [
@@ -1025,9 +1071,9 @@ const CHAPTERS = [
     reflection: {
       question: "あなた自身の経験を振り返ってみてください。",
       options: [
-        { emoji: "🙋", text: "無理をして体調を崩し、結局パフォーマンスが落ちた経験がある", response: "多くの人がその経験を持っています。Stockでは、その「無理」を未然に防ぐ仕組みがあります。あなたのその経験は、健康の大切さを本当に理解している証です。" },
-        { emoji: "😌", text: "思い切って休んだら、復帰後にむしろ良い成果が出た経験がある", response: "まさにそれこそがStockの考え方です。休むことは「サボる」ことではなく、最高のパフォーマンスを出すための投資。あなたはすでにその本質を知っています。" },
-        { emoji: "🤔", text: "「休みたい」と言い出せなかった経験がある", response: "「言い出せない空気」こそが問題の本質です。Stockでは、休むことに許可は不要です。なぜなら、心身の健康よりも大切なタスクは、この世に存在しないから。" }
+        { emoji: "🙋", text: "無理をして体調を崩し、結局パフォーマンスが落ちた経験がある", response: "多くの人がその経験を持っています。Stockでは、その「無理」を未然に防ぐ仕組みがあります。あなたのその経験は、健康の大切さを本当に理解している証です。", points: {health:30,speed:0,logic:10,proactivity:0,decisiveness:0} },
+        { emoji: "😌", text: "思い切って休んだら、復帰後にむしろ良い成果が出た経験がある", response: "まさにそれこそがStockの考え方です。休むことは「サボる」ことではなく、最高のパフォーマンスを出すための投資。あなたはすでにその本質を知っています。", points: {health:30,speed:10,logic:0,proactivity:0,decisiveness:0} },
+        { emoji: "🤔", text: "「休みたい」と言い出せなかった経験がある", response: "「言い出せない空気」こそが問題の本質です。Stockでは、休むことに許可は不要です。なぜなら、心身の健康よりも大切なタスクは、この世に存在しないから。", points: {health:20,speed:0,logic:0,proactivity:20,decisiveness:0} }
       ]
     },
     stockStory: {
@@ -1057,6 +1103,11 @@ const CHAPTERS = [
       dialogue: { speaker: "マネージャー", text: "すごく良い視点だね。入社年次に関係なく、論理的に筋が通っている意見は採用するよ。もっと聞かせて。" },
       consequence: "新鮮な視点が次々と採用され、プロダクトは進化し続けます。メンバー全員が「自分の意見には価値がある」と感じ、チームの活力が生まれています。"
     },
+    diffs: [
+      {label:'発言への反応',worldB:'「まだ経験を積んでから」',worldA:'「論理的なら誰の意見も採用」'},
+      {label:'評価基準',worldB:'役職と入社年次で判断',worldA:'「何を言ったか」だけで判断'},
+      {label:'チームの活力',worldB:'若手が発言しなくなる',worldA:'全員が安心して意見できる'}
+    ],
     discovery: {
       question: "ふたつの世界の違いを生んでいるものは何でしょう？",
       choices: [
@@ -1070,9 +1121,9 @@ const CHAPTERS = [
     reflection: {
       question: "あなたの過去を振り返ってみてください。",
       options: [
-        { emoji: "😤", text: "年齢や立場を理由に意見を聞いてもらえなかった経験がある", response: "その悔しさを知っているあなただからこそ、Stockの「操作性のない事柄で判断しない」という考え方の大切さが、きっと深く理解できるはずです。" },
-        { emoji: "😊", text: "立場に関係なく意見を尊重してもらえた経験がある", response: "その環境がいかに貴重かを知っているあなたは、Stockの文化を守り、広げていく力になれる人です。" },
-        { emoji: "🙏", text: "自分自身が無意識に年齢や立場で判断していたかもしれない", response: "その「気づき」がとても大切です。誰もが無意識のバイアスを持っています。大切なのは、それに気づき、意識的に変えていこうとすることです。Stockはそれを仕組みで支えます。" }
+        { emoji: "😤", text: "年齢や立場を理由に意見を聞いてもらえなかった経験がある", response: "その悔しさを知っているあなただからこそ、Stockの「操作性のない事柄で判断しない」という考え方の大切さが、きっと深く理解できるはずです。", points: {health:0,speed:0,logic:20,proactivity:0,decisiveness:20} },
+        { emoji: "😊", text: "立場に関係なく意見を尊重してもらえた経験がある", response: "その環境がいかに貴重かを知っているあなたは、Stockの文化を守り、広げていく力になれる人です。", points: {health:10,speed:0,logic:0,proactivity:20,decisiveness:0} },
+        { emoji: "🙏", text: "自分自身が無意識に年齢や立場で判断していたかもしれない", response: "その「気づき」がとても大切です。誰もが無意識のバイアスを持っています。大切なのは、それに気づき、意識的に変えていこうとすることです。Stockはそれを仕組みで支えます。", points: {health:10,speed:0,logic:30,proactivity:0,decisiveness:0} }
       ]
     },
     stockStory: {
@@ -1102,6 +1153,11 @@ const CHAPTERS = [
       dialogue: { speaker: "デザイナー", text: "このボタン、ITに詳しくないお母さんでも迷わず押せるかな？ 少しでも迷うなら、もっとシンプルにしよう。" },
       consequence: "「こんなに簡単なツールは初めて」という声が続出。ITリテラシーに関係なく、誰もが情報共有できる世界が実現しています。"
     },
+    diffs: [
+      {label:'設計思想',worldB:'「多機能」が売り',worldA:'「0.5秒で伝わる」が基準'},
+      {label:'ユーザーの声',worldB:'「難しい」と離脱',worldA:'「こんな簡単なツール初めて」'},
+      {label:'開発者の姿勢',worldB:'技術的に良いものを追求',worldA:'ITが苦手な人でも使えるかで判断'}
+    ],
     discovery: {
       question: "ふたつの世界を分けたものは何でしょう？",
       choices: [
@@ -1115,9 +1171,9 @@ const CHAPTERS = [
     reflection: {
       question: "あなたのこれまでの経験を思い出してみてください。",
       options: [
-        { emoji: "😫", text: "複雑すぎるツールやサービスに挫折した経験がある", response: "その「挫折」こそ、Stockが解決したい課題そのものです。あなたのその体験は、「誰もが使えるシンプルさ」がいかに大切かを物語っています。" },
-        { emoji: "💡", text: "シンプルで直感的なサービスに感動した経験がある", response: "その感動の裏には、「わかりやすさ」のために何度もやり直した人たちの努力があります。Stockはその努力を惜しまない会社です。" },
-        { emoji: "🎯", text: "「もっとシンプルにできないか？」と考えたことがある", response: "その問いかけ自体が、Stockの考え方と同じです。常に「もっとシンプルに」と問い続ける姿勢が、最高のプロダクトを生み出します。" }
+        { emoji: "😫", text: "複雑すぎるツールやサービスに挫折した経験がある", response: "その「挫折」こそ、Stockが解決したい課題そのものです。あなたのその体験は、「誰もが使えるシンプルさ」がいかに大切かを物語っています。", points: {health:10,speed:0,logic:20,proactivity:0,decisiveness:0} },
+        { emoji: "💡", text: "シンプルで直感的なサービスに感動した経験がある", response: "その感動の裏には、「わかりやすさ」のために何度もやり直した人たちの努力があります。Stockはその努力を惜しまない会社です。", points: {health:0,speed:10,logic:0,proactivity:20,decisiveness:0} },
+        { emoji: "🎯", text: "「もっとシンプルにできないか？」と考えたことがある", response: "その問いかけ自体が、Stockの考え方と同じです。常に「もっとシンプルに」と問い続ける姿勢が、最高のプロダクトを生み出します。", points: {health:0,speed:0,logic:20,proactivity:0,decisiveness:20} }
       ]
     },
     stockStory: {
@@ -1147,6 +1203,11 @@ const CHAPTERS = [
       dialogue: { speaker: "ユーザー", text: "えっ、もう返信が来たんですか？ AIか何かでサポートメールの返信をしているのですか？" },
       consequence: "「とてもクオリティの高い返信が、いつでもとんでもないスピードで返ってくる」とユーザーから驚きと感謝の声が届いています。"
     },
+    diffs: [
+      {label:'対応方針',worldB:'「24時間以内に返信」がルール',worldA:'「速ければ速いほど良い」が文化'},
+      {label:'ユーザーの感想',worldB:'「返信が遅い」と不満',worldA:'「AIかと思った」と感動'},
+      {label:'信頼への影響',worldB:'信頼が徐々に低下',worldA:'驚きと感謝の声が届く'}
+    ],
     discovery: {
       question: "この違いの本質は何でしょう？",
       choices: [
@@ -1160,9 +1221,9 @@ const CHAPTERS = [
     reflection: {
       question: "スピードについて、あなたの経験を振り返ってみてください。",
       options: [
-        { emoji: "😍", text: "予想よりずっと速い対応に感動した経験がある", response: "その感動を覚えているあなたは、「スピード」が持つ力をすでに体感しています。Stockは、その感動を毎日のように届ける会社です。" },
-        { emoji: "😔", text: "「もっと早く対応すればよかった」と後悔した経験がある", response: "その後悔は、あなたが相手のことを本当に考えている証拠です。Stockでは、「速さ」を個人の頑張りではなく、仕組みとして実現しています。" },
-        { emoji: "🤔", text: "速さと品質のバランスに悩んだ経験がある", response: "Stockが示す答えは「両方」です。速さも品質も諦めない。「AIかと思った」という言葉は、そのどちらも実現できた証です。" }
+        { emoji: "😍", text: "予想よりずっと速い対応に感動した経験がある", response: "その感動を覚えているあなたは、「スピード」が持つ力をすでに体感しています。Stockは、その感動を毎日のように届ける会社です。", points: {health:0,speed:30,logic:0,proactivity:10,decisiveness:0} },
+        { emoji: "😔", text: "「もっと早く対応すればよかった」と後悔した経験がある", response: "その後悔は、あなたが相手のことを本当に考えている証拠です。Stockでは、「速さ」を個人の頑張りではなく、仕組みとして実現しています。", points: {health:10,speed:20,logic:0,proactivity:0,decisiveness:0} },
+        { emoji: "🤔", text: "速さと品質のバランスに悩んだ経験がある", response: "Stockが示す答えは「両方」です。速さも品質も諦めない。「AIかと思った」という言葉は、そのどちらも実現できた証です。", points: {health:0,speed:20,logic:20,proactivity:0,decisiveness:0} }
       ]
     },
     stockStory: {
@@ -1192,6 +1253,11 @@ const CHAPTERS = [
       dialogue: { speaker: "メンバー", text: "来週のミーティングで使うかもしれないと思って、先にデータをまとめておきました。使えそうですか？" },
       consequence: "一人ひとりが「次に何が必要か」を先読みして動くため、チーム全体が驚くほどスムーズに。お互いへの感謝が自然に生まれています。"
     },
+    diffs: [
+      {label:'行動パターン',worldB:'「指示が来たらやります」',worldA:'「先に動いておきました」'},
+      {label:'日常の言葉',worldB:'「自分の担当外です」',worldA:'「Proactiveで助かりました」'},
+      {label:'チームの動き',worldB:'隙間のタスクが放置される',worldA:'全体がスムーズに回る'}
+    ],
     discovery: {
       question: "この2つの世界を分けるものは？",
       choices: [
@@ -1205,9 +1271,9 @@ const CHAPTERS = [
     reflection: {
       question: "「能動的な行動」について思い出してみてください。",
       options: [
-        { emoji: "✨", text: "先回りして動いたことで喜ばれた経験がある", response: "その「先回り」こそがProactiveなアクションです。Stockでは、まさにその行動が日常的に称賛され、感謝される環境があります。" },
-        { emoji: "💭", text: "「気づいていたけど動けなかった」という経験がある", response: "「気づいていた」こと自体がとても大切です。あとは一歩踏み出す勇気だけ。Stockでは、その一歩を踏み出した人を全力で応援します。" },
-        { emoji: "🌟", text: "誰かのProactiveな行動に助けられた経験がある", response: "その感謝の気持ちを持てるあなたは、きっと自分もProactiveに動ける人です。Stockでは「ありがとう」が自然に行き交う環境があります。" }
+        { emoji: "✨", text: "先回りして動いたことで喜ばれた経験がある", response: "その「先回り」こそがProactiveなアクションです。Stockでは、まさにその行動が日常的に称賛され、感謝される環境があります。", points: {health:0,speed:10,logic:0,proactivity:30,decisiveness:0} },
+        { emoji: "💭", text: "「気づいていたけど動けなかった」という経験がある", response: "「気づいていた」こと自体がとても大切です。あとは一歩踏み出す勇気だけ。Stockでは、その一歩を踏み出した人を全力で応援します。", points: {health:0,speed:0,logic:0,proactivity:20,decisiveness:10} },
+        { emoji: "🌟", text: "誰かのProactiveな行動に助けられた経験がある", response: "その感謝の気持ちを持てるあなたは、きっと自分もProactiveに動ける人です。Stockでは「ありがとう」が自然に行き交う環境があります。", points: {health:10,speed:0,logic:0,proactivity:20,decisiveness:0} }
       ]
     },
     stockStory: {
@@ -1237,6 +1303,11 @@ const CHAPTERS = [
       dialogue: { speaker: "リーダー", text: "3ヶ月かけたのは事実。でも、『これまで』と『これから』は別の問題だ。今からベストな選択をしよう。" },
       consequence: "素早い方向転換のおかげで、新しい方向で1ヶ月後にはユーザーに喜ばれる機能をリリース。「あの時切り替えてよかった」とチーム全員が感じています。"
     },
+    diffs: [
+      {label:'判断基準',worldB:'「3ヶ月の工数を捨てられない」',worldA:'「今からベストな選択をしよう」'},
+      {label:'思考の起点',worldB:'過去に費やしたコスト',worldA:'未来の価値'},
+      {label:'結果',worldB:'半年後にさらに大きな損失',worldA:'1ヶ月後にユーザーに喜ばれる機能'}
+    ],
     discovery: {
       question: "この差を生んだ本質的な違いは？",
       choices: [
@@ -1250,9 +1321,9 @@ const CHAPTERS = [
     reflection: {
       question: "「もったいない」と感じた経験を思い出してみてください。",
       options: [
-        { emoji: "😣", text: "「ここまでやったから」と続けて、結局後悔した経験がある", response: "その後悔を知っているからこそ、「サンクコストを切り捨てる」ことの価値がわかるはず。過去の経験を、これからの判断基準に変えていきましょう。" },
-        { emoji: "💪", text: "勇気を持って方向転換し、うまくいった経験がある", response: "その勇気は簡単に持てるものではありません。Stockでは、その「切り替え」を個人の勇気に頼らず、チームの文化として支えます。" },
-        { emoji: "🤔", text: "方向転換すべきか迷っている状況が、今まさにある", response: "「迷っている」と認識できていること自体が大切な一歩です。判断のヒントは「過去を基準にしていないか？未来を見て判断しているか？」と自問すること。Stockの仲間がその判断を一緒に支えます。" }
+        { emoji: "😣", text: "「ここまでやったから」と続けて、結局後悔した経験がある", response: "その後悔を知っているからこそ、「サンクコストを切り捨てる」ことの価値がわかるはず。過去の経験を、これからの判断基準に変えていきましょう。", points: {health:0,speed:0,logic:20,proactivity:0,decisiveness:20} },
+        { emoji: "💪", text: "勇気を持って方向転換し、うまくいった経験がある", response: "その勇気は簡単に持てるものではありません。Stockでは、その「切り替え」を個人の勇気に頼らず、チームの文化として支えます。", points: {health:0,speed:0,logic:0,proactivity:10,decisiveness:30} },
+        { emoji: "🤔", text: "方向転換すべきか迷っている状況が、今まさにある", response: "「迷っている」と認識できていること自体が大切な一歩です。判断のヒントは「過去を基準にしていないか？未来を見て判断しているか？」と自問すること。Stockの仲間がその判断を一緒に支えます。", points: {health:10,speed:0,logic:20,proactivity:0,decisiveness:0} }
       ]
     },
     stockStory: {
@@ -1282,6 +1353,11 @@ const CHAPTERS = [
       dialogue: { speaker: "メンバー", text: "その判断の根拠を教えてもらえますか？ 自分はこのデータからこう考えるのですが、いかがでしょう？" },
       consequence: "全員が対等に意見を言える環境が生まれ、最も論理的に優れた意見が採用されます。結果、意思決定の品質が格段に向上しています。"
     },
+    diffs: [
+      {label:'議論の基準',worldB:'声の大きい人が勝つ',worldA:'論理的に正しい意見が勝つ'},
+      {label:'根拠の扱い',worldB:'「経験でわかる」',worldA:'「データと根拠を見せて」'},
+      {label:'意見の平等さ',worldB:'若手の良いアイデアが埋もれる',worldA:'全員が対等に意見を言える'}
+    ],
     discovery: {
       question: "フェアな議論を実現しているものは何でしょう？",
       choices: [
@@ -1295,9 +1371,9 @@ const CHAPTERS = [
     reflection: {
       question: "「議論」や「意見の伝え方」について振り返ってみてください。",
       options: [
-        { emoji: "🗣", text: "感情ではなく根拠を示して相手を納得させた経験がある", response: "その経験は、Stockの「論理的であること」の文化そのものです。論理的に伝える力は、全員がフェアでいるための土台になります。" },
-        { emoji: "😔", text: "論理的に正しくても、通せなかった経験がある", response: "その悔しさは正当なものです。Stockでは「誰が言ったか」ではなく「何を言ったか」で判断されます。あなたの論理は、ここでは正しく評価されます。" },
-        { emoji: "💡", text: "相手の論理的な指摘で、自分の考えが変わった経験がある", response: "論理的な指摘で考えを変えられるのは、とても知性的な態度です。Stockでは、良い論理の前で柔軟に考えを変えることが称賛されます。" }
+        { emoji: "🗣", text: "感情ではなく根拠を示して相手を納得させた経験がある", response: "その経験は、Stockの「論理的であること」の文化そのものです。論理的に伝える力は、全員がフェアでいるための土台になります。", points: {health:0,speed:0,logic:30,proactivity:10,decisiveness:0} },
+        { emoji: "😔", text: "論理的に正しくても、通せなかった経験がある", response: "その悔しさは正当なものです。Stockでは「誰が言ったか」ではなく「何を言ったか」で判断されます。あなたの論理は、ここでは正しく評価されます。", points: {health:0,speed:0,logic:20,proactivity:0,decisiveness:20} },
+        { emoji: "💡", text: "相手の論理的な指摘で、自分の考えが変わった経験がある", response: "論理的な指摘で考えを変えられるのは、とても知性的な態度です。Stockでは、良い論理の前で柔軟に考えを変えることが称賛されます。", points: {health:10,speed:0,logic:30,proactivity:0,decisiveness:0} }
       ]
     },
     stockStory: {
@@ -1327,6 +1403,11 @@ const CHAPTERS = [
       dialogue: { speaker: "メンバーA", text: "すみません、自分ももっと早い段階で確認しておくべきでした。一緒に原因を整理して、再発防止を考えましょう。" },
       consequence: "問題解決が驚くほど速く、むしろトラブルの後にチームの絆が深まります。「あの人も自分から謝ってくれた」という信頼が積み重なっています。"
     },
+    diffs: [
+      {label:'問題発生時の第一声',worldB:'「誰のせい？」',worldA:'「すみません、自分も…」'},
+      {label:'チームの空気',worldB:'責任の押し付け合い',worldA:'一緒に原因を整理する'},
+      {label:'問題解決後',worldB:'信頼関係がボロボロに',worldA:'チームの絆がさらに深まる'}
+    ],
     discovery: {
       question: "このチーム力の違いは何から生まれていますか？",
       choices: [
@@ -1340,9 +1421,9 @@ const CHAPTERS = [
     reflection: {
       question: "「謝ること」「責任」について振り返ってみてください。",
       options: [
-        { emoji: "🙇", text: "自分から「すみません」と言って、状況が好転した経験がある", response: "その経験は貴重です。「すみません」の一言は、弱さの表現ではなく、信頼を築く最も強い行動の一つ。あなたはすでにそれを知っています。" },
-        { emoji: "😤", text: "自分は悪くないのに謝ることに抵抗がある", response: "その気持ちはとても自然です。でもStockの「すみません」は、100%自分が悪いという意味ではありません。「自分にもできることがあったかもしれない」と省みる姿勢のことです。" },
-        { emoji: "🤝", text: "相手が先に謝ってくれて、心が楽になった経験がある", response: "「すみません」の力を受け取った側として実感しているあなたは、今度は自分がその力を使う番です。Stockでは、その連鎖が日常的に起きています。" }
+        { emoji: "🙇", text: "自分から「すみません」と言って、状況が好転した経験がある", response: "その経験は貴重です。「すみません」の一言は、弱さの表現ではなく、信頼を築く最も強い行動の一つ。あなたはすでにそれを知っています。", points: {health:20,speed:0,logic:0,proactivity:20,decisiveness:0} },
+        { emoji: "😤", text: "自分は悪くないのに謝ることに抵抗がある", response: "その気持ちはとても自然です。でもStockの「すみません」は、100%自分が悪いという意味ではありません。「自分にもできることがあったかもしれない」と省みる姿勢のことです。", points: {health:0,speed:0,logic:10,proactivity:0,decisiveness:20} },
+        { emoji: "🤝", text: "相手が先に謝ってくれて、心が楽になった経験がある", response: "「すみません」の力を受け取った側として実感しているあなたは、今度は自分がその力を使う番です。Stockでは、その連鎖が日常的に起きています。", points: {health:20,speed:0,logic:0,proactivity:20,decisiveness:0} }
       ]
     },
     stockStory: {
@@ -1372,6 +1453,11 @@ const CHAPTERS = [
       dialogue: { speaker: "リーダー", text: "中間はとらない。まずAで振り切ってやってみよう。結果が出れば、次のアクションが明確になる。" },
       consequence: "明確な施策は明確な結果を生み、成功でも失敗でも「次にやるべきこと」がはっきり見えます。意思決定のスピードと学びのサイクルが加速しています。"
     },
+    diffs: [
+      {label:'意思決定',worldB:'「中間をとろう」',worldA:'「Aで振り切ってやろう」'},
+      {label:'施策の結果',worldB:'効果も失敗もはっきりしない',worldA:'明確な結果が出る'},
+      {label:'次のアクション',worldB:'同じ議論の繰り返し',worldA:'次にやるべきことが見える'}
+    ],
     discovery: {
       question: "なぜ「グレーが最悪」なのでしょうか？",
       choices: [
@@ -1385,9 +1471,9 @@ const CHAPTERS = [
     reflection: {
       question: "「曖昧な判断」について思い出してみてください。",
       options: [
-        { emoji: "😫", text: "中途半端な判断で結局やり直しになった経験がある", response: "その経験は「グレーが最悪」を体感として知っているということ。Stockでは、白か黒かを明確にすることで、その無駄を未然に防ぎます。" },
-        { emoji: "💪", text: "迷ったがどちらかに振り切って、結果的にうまくいった経験がある", response: "その「振り切る勇気」こそがStockの文化です。明確な判断は、明確な結果を生む。そしてその結果が、次の前進を可能にします。" },
-        { emoji: "🤔", text: "「様子を見よう」と言って先延ばしにした経験がある", response: "「様子を見る」は一見慎重に見えますが、実は判断を先延ばしにしているだけかもしれません。Stockでは「まず決めて、やってみて、結果を見る」ことを大切にしています。" }
+        { emoji: "😫", text: "中途半端な判断で結局やり直しになった経験がある", response: "その経験は「グレーが最悪」を体感として知っているということ。Stockでは、白か黒かを明確にすることで、その無駄を未然に防ぎます。", points: {health:0,speed:0,logic:10,proactivity:0,decisiveness:30} },
+        { emoji: "💪", text: "迷ったがどちらかに振り切って、結果的にうまくいった経験がある", response: "その「振り切る勇気」こそがStockの文化です。明確な判断は、明確な結果を生む。そしてその結果が、次の前進を可能にします。", points: {health:0,speed:10,logic:0,proactivity:0,decisiveness:30} },
+        { emoji: "🤔", text: "「様子を見よう」と言って先延ばしにした経験がある", response: "「様子を見る」は一見慎重に見えますが、実は判断を先延ばしにしているだけかもしれません。Stockでは「まず決めて、やってみて、結果を見る」ことを大切にしています。", points: {health:0,speed:0,logic:0,proactivity:10,decisiveness:20} }
       ]
     },
     stockStory: {
@@ -1417,6 +1503,11 @@ const CHAPTERS = [
       dialogue: { speaker: "ある中小企業の社長", text: "Stock使い始めてから、うちの会社の情報共有が劇的に変わった。こんなに簡単なツールは初めてだよ。" },
       consequence: "世界中の非IT企業から、情報共有のストレスが取り除かれています。そしてその差分は、日々広がり続けています。"
     },
+    diffs: [
+      {label:'ユーザーの状態',worldB:'ITツールを使いこなせず情報が消失',worldA:'誰でも情報を残し共有できる'},
+      {label:'企業の声',worldB:'「使えるITツールなんてない」',worldA:'「情報共有が劇的に変わった」'},
+      {label:'未来',worldB:'同じ問題が繰り返される',worldA:'差分が日々広がり続ける'}
+    ],
     discovery: {
       question: "最終章の問いです。あなたがこれからStockで働くことで広げたい「差分」は何ですか？",
       choices: [
@@ -1430,9 +1521,9 @@ const CHAPTERS = [
     reflection: {
       question: "最後に、あなた自身について考えてみてください。",
       options: [
-        { emoji: "🌱", text: "自分の存在が誰かの役に立っていると感じた経験がある", response: "その実感こそが、「世界線の差分」です。あなたがいることで良くなった何か ― それをStockでさらに大きく広げていきましょう。" },
-        { emoji: "🔍", text: "自分の仕事の意味や影響を、もっと実感したい", response: "Stockでは、あなたの仕事が「非IT企業の情報共有ストレス」を取り除くことに直結しています。その影響は、ユーザーの声として日々届きます。" },
-        { emoji: "🚀", text: "まだわからないが、これから見つけていきたい", response: "素直に「これから」と言えることがとても素敵です。Stockでの日々の中で、きっと「自分がいるからこそ」の瞬間に出会えるはず。楽しみにしていてください。" }
+        { emoji: "🌱", text: "自分の存在が誰かの役に立っていると感じた経験がある", response: "その実感こそが、「世界線の差分」です。あなたがいることで良くなった何か ― それをStockでさらに大きく広げていきましょう。", points: {health:10,speed:0,logic:0,proactivity:10,decisiveness:0} },
+        { emoji: "🔍", text: "自分の仕事の意味や影響を、もっと実感したい", response: "Stockでは、あなたの仕事が「非IT企業の情報共有ストレス」を取り除くことに直結しています。その影響は、ユーザーの声として日々届きます。", points: {health:0,speed:0,logic:0,proactivity:20,decisiveness:20} },
+        { emoji: "🚀", text: "まだわからないが、これから見つけていきたい", response: "素直に「これから」と言えることがとても素敵です。Stockでの日々の中で、きっと「自分がいるからこそ」の瞬間に出会えるはず。楽しみにしていてください。", points: {health:10,speed:0,logic:0,proactivity:20,decisiveness:0} }
       ]
     },
     stockStory: {
@@ -1448,14 +1539,21 @@ let gameState = {
   currentChapter: 0,
   currentStep: 0,
   completed: [],
-  reflections: []
+  reflections: [],
+  insights: { health: 0, speed: 0, logic: 0, proactivity: 0, decisiveness: 0 }
 };
 
 // Load saved state
 function loadState() {
   const saved = localStorage.getItem('stock-philosophy-game');
   if (saved) {
-    try { gameState = JSON.parse(saved); } catch(e) {}
+    try {
+      const parsed = JSON.parse(saved);
+      gameState = parsed;
+      if (!gameState.insights) {
+        gameState.insights = { health: 0, speed: 0, logic: 0, proactivity: 0, decisiveness: 0 };
+      }
+    } catch(e) {}
   }
 }
 function saveState() {
@@ -1534,6 +1632,7 @@ function renderChapterGrid() {
 function startChapter(index) {
   gameState.currentChapter = index;
   gameState.currentStep = 0;
+  diffFoundCount = 0;
   
   showPortal('b', '世界線Bへ移動中...', () => {
     showScreen('game-screen');
@@ -1602,18 +1701,25 @@ function renderStep() {
       </div>
     `;
   } else if (step === 2) {
-    // Discovery
+    // Diff Discovery
     gs.classList.add('world-a');
     worldName.textContent = '違いの発見';
+    const diffs = ch.diffs;
     const d = ch.discovery;
     content.innerHTML = `
       <div class="scene-card">
         <span class="scene-emoji">🔍</span>
         <span class="scene-label">DISCOVERY</span>
-        <h2 class="scene-title">${d.question}</h2>
-        <div class="choices" id="discovery-choices">
-          ${d.choices.map((c, i) => `
-            <button class="choice-btn" onclick="selectDiscovery(${i})">${c}</button>
+        <h2 class="scene-title">ふたつの世界の違いを見つけよう</h2>
+        <p class="scene-text">各行をタップして、世界線Bと世界線Aの違いを発見してください。</p>
+        <div class="diff-counter" id="diff-counter">✨ 0 / 3 の違いを発見！</div>
+        <div class="diff-grid" id="diff-grid">
+          ${diffs.map((df, i) => `
+            <div class="diff-row" id="diff-row-${i}" onclick="revealDiff(${i})">
+              <div class="diff-label">${df.label}</div>
+              <div class="diff-cell diff-cell-b hidden">${df.worldB}</div>
+              <div class="diff-cell diff-cell-a hidden">${df.worldA}</div>
+            </div>
           `).join('')}
         </div>
         <div id="discovery-result" style="display:none"></div>
@@ -1701,22 +1807,53 @@ function goToWorldA() {
 
 function goToDiscovery() {
   gameState.currentStep = 2;
+  diffFoundCount = 0;
   renderStep();
 }
 
+// Diff discovery state
+let diffFoundCount = 0;
+
+function revealDiff(index) {
+  const row = document.getElementById('diff-row-' + index);
+  if (row.classList.contains('found')) return;
+  
+  row.classList.add('found');
+  const cells = row.querySelectorAll('.diff-cell');
+  cells.forEach(c => c.classList.remove('hidden'));
+  
+  // Sparkle animation
+  row.style.animation = 'slideUp 0.4s ease';
+  
+  diffFoundCount++;
+  const counter = document.getElementById('diff-counter');
+  counter.textContent = `✨ ${diffFoundCount} / 3 の違いを発見！`;
+  
+  if (diffFoundCount >= 3) {
+    const ch = CHAPTERS[gameState.currentChapter];
+    const d = ch.discovery;
+    setTimeout(() => {
+      const result = document.getElementById('discovery-result');
+      result.style.display = 'block';
+      result.innerHTML = `
+        <div class="reflect-response">
+          <p>${d.explanation}</p>
+        </div>
+        <div style="text-align:center">
+          <button class="btn-next" onclick="goToReflection()">
+            自分を振り返る →
+          </button>
+        </div>
+      `;
+    }, 500);
+  }
+}
+
 function selectDiscovery(index) {
+  // Legacy fallback - kept for compatibility
   const ch = CHAPTERS[gameState.currentChapter];
   const d = ch.discovery;
-  const btns = document.querySelectorAll('#discovery-choices .choice-btn');
-  
-  btns.forEach((btn, i) => {
-    btn.classList.toggle('selected', i === index);
-    btn.onclick = null;
-  });
-  
   const result = document.getElementById('discovery-result');
-  const isBest = index === d.bestIndex || d.bestIndex === -1;
-  
   result.style.display = 'block';
   result.innerHTML = `
     <div class="reflect-response">
@@ -1750,8 +1887,14 @@ function selectReflection(index) {
     btn.style.cursor = 'default';
   });
   
-  // Save reflection
+  // Save reflection and add insight points
   gameState.reflections[gameState.currentChapter] = index;
+  if (option.points) {
+    const keys = ['health', 'speed', 'logic', 'proactivity', 'decisiveness'];
+    keys.forEach(k => {
+      gameState.insights[k] = (gameState.insights[k] || 0) + (option.points[k] || 0);
+    });
+  }
   saveState();
   
   const result = document.getElementById('reflect-result');
@@ -1796,6 +1939,45 @@ function backToChapters() {
 }
 
 // ===== ENDING =====
+function getInsightTitle(insights) {
+  const axes = [
+    { key: 'health', label: 'ヘルスケア意識', icon: '🛡', titleWord: '守護者', prefix: '' },
+    { key: 'speed', label: 'スピード感覚', icon: '⚡', titleWord: 'アクショニスト', prefix: '電光石火の' },
+    { key: 'logic', label: '論理的思考力', icon: '🔍', titleWord: 'フェアネスの体現者', prefix: '' },
+    { key: 'proactivity', label: '能動性', icon: '🌱', titleWord: 'イノベーター', prefix: '先読みの' },
+    { key: 'decisiveness', label: '決断力', icon: '🎯', titleWord: 'ナビゲーター', prefix: '決断の' }
+  ];
+  
+  const sorted = [...axes].sort((a, b) => (insights[b.key] || 0) - (insights[a.key] || 0));
+  const top = sorted[0];
+  const second = sorted[1];
+  const topVal = insights[top.key] || 0;
+  const secondVal = insights[second.key] || 0;
+  
+  const titles = {
+    health: '「チームの守護者」',
+    speed: '「電光石火のアクショニスト」',
+    logic: '「フェアネスの体現者」',
+    proactivity: '「先読みのイノベーター」',
+    decisiveness: '「決断のナビゲーター」'
+  };
+  
+  if (topVal - secondVal <= 10 && topVal > 0) {
+    // Combine top 2
+    const comboPrefixes = {
+      health: 'ヘルスケアの', speed: '電光石火の', logic: 'フェアネスの',
+      proactivity: '先読みの', decisiveness: '決断の'
+    };
+    const comboSuffixes = {
+      health: '守護者', speed: 'アクショニスト', logic: '体現者',
+      proactivity: 'イノベーター', decisiveness: 'ナビゲーター'
+    };
+    return '「' + comboPrefixes[top.key] + comboSuffixes[second.key] + '」';
+  }
+  
+  return titles[top.key];
+}
+
 function showEnding() {
   showScreen('ending-screen');
   const content = document.getElementById('ending-content');
@@ -1816,10 +1998,42 @@ function showEnding() {
     "></div>`;
   }
   
+  const ins = gameState.insights || { health: 0, speed: 0, logic: 0, proactivity: 0, decisiveness: 0 };
+  const maxVal = Math.max(ins.health, ins.speed, ins.logic, ins.proactivity, ins.decisiveness, 1);
+  const title = getInsightTitle(ins);
+  
+  const axisConfig = [
+    { key: 'health', label: '🛡 ヘルスケア意識', cls: 'health' },
+    { key: 'speed', label: '⚡ スピード感覚', cls: 'speed' },
+    { key: 'logic', label: '🔍 論理的思考力', cls: 'logic' },
+    { key: 'proactivity', label: '🌱 能動性', cls: 'proactivity' },
+    { key: 'decisiveness', label: '🎯 決断力', cls: 'decisiveness' }
+  ];
+  
   content.innerHTML = `
     ${confettiHTML}
     <h2>🎉 全10の世界線を探索しました！</h2>
     <p>あなたは今、Stockが大切にしている10の考え方を<br>ふたつの世界線の対比を通じて体験しました。</p>
+    
+    <div class="insight-title">
+      <span class="title-icon">🏆</span>
+      <span class="title-text">あなたの称号: ${title}</span>
+    </div>
+    
+    <div class="ending-summary">
+      <h3>インサイトチャート</h3>
+      <div class="insight-chart">
+        ${axisConfig.map(ax => `
+          <div class="insight-row">
+            <div class="insight-label">${ax.label}</div>
+            <div class="insight-bar-bg">
+              <div class="insight-bar-fill ${ax.cls}" style="width: 0%" data-target="${Math.round((ins[ax.key] / maxVal) * 100)}"></div>
+              <span class="insight-value">${ins[ax.key]}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
     
     <div class="ending-summary">
       <h3>発見した10の考え方</h3>
@@ -1847,10 +2061,17 @@ function showEnding() {
       🔄 最初からプレイする
     </button>
   `;
+  
+  // Animate bars
+  setTimeout(() => {
+    document.querySelectorAll('.insight-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  }, 100);
 }
 
 function resetGame() {
-  gameState = { currentChapter: 0, currentStep: 0, completed: [], reflections: [] };
+  gameState = { currentChapter: 0, currentStep: 0, completed: [], reflections: [], insights: { health: 0, speed: 0, logic: 0, proactivity: 0, decisiveness: 0 } };
   saveState();
   showScreen('title-screen');
 }
