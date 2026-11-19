@@ -955,6 +955,22 @@ body {
   .diff-row { grid-template-columns: 1fr; }
   .insight-label { min-width: 100px; font-size: 0.75rem; }
 }
+
+/* ===== BUILD NOTE ===== */
+.build-note {
+  position: fixed;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.7);
+  background: rgba(0,0,0,0.35);
+  padding: 2px 10px;
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 2000;
+}
 </style>
 </head>
 <body>
@@ -964,6 +980,9 @@ body {
   <div class="portal-circle"></div>
   <span class="portal-text" id="portal-text"></span>
 </div>
+
+<!-- Build Note (always visible, all screens) -->
+<div class="build-note">Tsukurel の試験で直した版です</div>
 
 <!-- TITLE SCREEN -->
 <div class="screen active" id="title-screen">
